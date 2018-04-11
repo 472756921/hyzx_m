@@ -61,7 +61,6 @@ export default {
     }
   },
   created(){
-    console.log(this.userInfo);
     this.myBrowser();
     this.checkUrl();
     this.checkLogin();

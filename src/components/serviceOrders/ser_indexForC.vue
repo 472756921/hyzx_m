@@ -217,7 +217,6 @@
           this.pages = res.data.pages;
         }).catch((error) => {
         });
-        console.log(this.order);
       },
       ok() {
         this.orderINfo.serviceDate = new Date(this.orderINfo.serviceDate).Format('yyyy-MM-dd')
@@ -302,7 +301,6 @@
         }
       },
       getPage(current){
-        console.log(current);
         this.getList(current);
       }
     },

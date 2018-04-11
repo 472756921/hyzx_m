@@ -23,7 +23,7 @@
       <br/>
       <br/>
       <div>服务项目</div>
-      <Select v-model="model2" :transfer="true" style="width:200px">
+      <Select v-model="model2" multiple :transfer="true" style="width:200px">
         <Option v-for="item in p_list" :value="item.id" :key="item.id">{{ item.projectName }}</Option>
       </Select>
       <br/>
@@ -63,7 +63,7 @@
         newDate: '',
         newDate2: '',
         model1: false,
-        model2: '',
+        model2: [],
         model3: '',
         model4: '',
         model5: '',
@@ -91,7 +91,6 @@
       this.showData = this.data;
       let myDate = new Date();
       let result = myDate.getFullYear()+'-'+(myDate.getMonth()+1)+'-'+myDate.getDate() ;
-      console.log(result);
       this.getList(result);
       this.GetData('u_Alllist',this, this.setData);
       this.GetData('e_Alllist',this, this.setData);
@@ -196,8 +195,6 @@
           },
           url: re_Alllist()
         }).then((res) => {
-          console.log(res);
-
           this.createdEvent(res);
         }).catch((error) => {
         });
@@ -231,7 +228,6 @@
         }
         this.newDate = new Date(this.newDate).Format('yyyy-MM-dd hh:mm')
         this.newDate2 = new Date(this.newDate2).Format('yyyy-MM-dd hh:mm')
-
         if(this.text == '修改预约'){
           return false;
         }
@@ -265,7 +261,6 @@
             color: '#38925E',
             textColor: '#eee',
           };
-        console.log(events);
         $('#calendar').fullCalendar( 'renderEvent', events, true);
       },
     }

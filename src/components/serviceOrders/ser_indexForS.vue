@@ -227,7 +227,6 @@
         });
       },
       ok() {
-        console.log(this.orderINfo);
         for (let variable in this.orderINfo) {
           if (this.orderINfo[variable] === '' || this.orderINfo[variable] === null) {
             this.$Message.warning('请完整填写服务单');
@@ -282,10 +281,8 @@
         for (let it in this.orderINfo.project) {
          project.push(data.project[i].projectId)
         }
-        console.log(project);
         this.orderINfo.project =[];
         this.orderINfo.project = project;
-        console.log(this.orderINfo.project);
 
       },
       settlement(data) {
