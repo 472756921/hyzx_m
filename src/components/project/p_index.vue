@@ -17,23 +17,23 @@
       <br/>
       <div>项目类型：{{project.type}}</div>
       <br/>
-      <div>项目单价：{{project.courseMoney}}</div>
+      <div>项目单价：{{project.courseMoney}}元</div>
       <br/>
-      <div>现金价格：{{project.cashMoney}}</div>
+      <div>现金价格：{{project.cashMoney}}元</div>
       <br/>
-      <div>卡扣价格：{{project.buckleMoney}}</div>
+      <div>卡扣价格：{{project.buckleMoney}}元</div>
       <br/>
-      <div>体验价格：{{project.experienceMoney}}</div>
+      <div>体验价格：{{project.experienceMoney}}元</div>
       <br/>
-      <div>疗程次数：{{project.frequency}}</div>
+      <div>疗程次数：{{project.frequency}}次</div>
       <br/>
-      <div>项目间隔：{{project.intervalTime}}</div>
+      <div>项目间隔：{{project.intervalTime}}天</div>
       <br/>
       <div>搭配项目：{{project.intervalTime}}</div>
       <br/>
       <div>项目属性：{{project.projectAttributes}}</div>
       <br/>
-      <div>解决问题：{{project.effect}}</div>
+      <div>解决问题：{{this.pro}}</div>
       <br/>
       <div>专业说明：{{project.projectDescription}}</div>
       <br/>
@@ -44,7 +44,7 @@
 </template>
 
 <script type="text/ecmascript-6">
-import {p_list} from '../../interface';
+import {p_list,pro_list} from '../../interface';
   export default {
     name: 'p_index',
     data () {
@@ -65,10 +65,23 @@ import {p_list} from '../../interface';
           {
             title: '项目类型',
             key: 'type',
+
           },
           {
             title: '解决问题',
             key: 'effect',
+            render: (h,params) =>{
+              let arr = params.row.effect.split(',');
+              for(let i in arr){
+                for(let j in this.problem){
+                  if(this.problem[j].id == arr[i]){
+                    this.pro = this.problem[j].problem;
+                    return h('span', this.problem[j].problem+',');
+                  }
+                }
+
+              }
+            }
           },
           {
             title: '操作',
@@ -96,12 +109,31 @@ import {p_list} from '../../interface';
           }
         ],
         data: [],
+        problem:[],
+        pro:'',
+        type:['身体类','面护类'],
+        attributes:['到店率','功效类','保养类']
       }
     },
     created() {
       this.getList(1);
+      this.getProblem();
     },
     methods: {
+      getProblem(){
+        this.$ajax({
+          method: 'GET',
+          dataType: 'JSON',
+          contentType: 'application/json;charset=UTF-8',
+          headers:{
+            "authToken": this.userInfo.authToken,
+          },
+          url: pro_list()+'?id='+this.userInfo.storeId,
+        }).then( (res) =>{
+          console.log(res);
+          this.problem = res.data;
+        }).catch( (err)=>{})
+      },
       edit(index) {
         this.emac = true;
         this.project = this.data[index];

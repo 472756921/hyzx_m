@@ -50,15 +50,15 @@
                 <span class="orderLititle">是否售前：</span>
                 <span class="orderLiCon">{{ item.preSale==0? '否':'是' }}</span>
               </Col>
-              <Col span="8">
+             <!-- <Col span="8">
                 <span class="orderLititle">创建时间：</span>
                 <span class="orderLiCon">{{ item.createTime }}</span>
-              </Col>
+              </Col>-->
             </Row>
           </div>
           <div v-if="item.project.length!=0">
             <div class="orderLititle">非卡扣项目：</div>
-            <div class="orderLiCon" v-for="(it,i) in item.project"  style="background: #f7f7f7;padding: 10px">
+            <div class="orderLiCon" v-for="(it,i) in item.project"  style="background: #f7f7f7;padding-left: 10px">
               {{ it.projectName }} &nbsp;<span class="price">￥{{ it.money }}</span>
             </div>
           </div>
@@ -67,9 +67,18 @@
               {{ it.projectName }} &nbsp;<span class="price">￥{{ it.money }}</span>
             </div>
           </div>
-          <div class="prtotle">储值卡付款合计：<span class="price" style="font-size: 16px">￥{{ item.cashAmount }}</span></div>
-          <div  style="width: 25%;margin: 0 auto">
-            <Button  class="hy_btn" @click="settlement(item)">结算</Button>
+          <div style="font-size: 16px;margin: 10px auto;" >储值卡付款合计：<span class="price" style="font-size: 16px">￥{{ item.cashAmount }}</span></div>
+          <div>结算方式：</div>
+          <RadioGroup v-model="ordertype[i]">
+            <Radio label="1" size="small"><span class="orderLititle">消耗：</span>
+              <span class="orderLiCon">(余111)</span></Radio>
+            <Radio label="2" size="small"> <span class="orderLititle">卡扣：</span>
+              <span class="orderLiCon">(余111)</span></Radio>
+            <Radio label="3" size="small"><span class="orderLititle">现金项：</span>
+              <span class="orderLiCon">(余111)</span></Radio>
+          </RadioGroup>
+          <div  style="width: 100%;margin: 10px auto;text-align:center">
+            <Button  :class="{hy_btn:ordertype[i]!=''&&ordertype[i]!=null}" @click="settlement(item,i)" :disabled="ordertype[i]==''||ordertype[i]==null">结算</Button>
             <Button type="ghost" @click="edit(item)">编辑</Button>
           </div>
         </div>
@@ -99,7 +108,7 @@
       <br>
       <span>技师选择：</span>
       <Select v-model="orderINfo.operatorId" :transfer="true" filterable style="width:200px">
-        <Option v-for="item in e_list" :value="item.id" :key="item.id">{{ item.realName }} - {{item.phoneNumber}}</Option>
+        <Option v-for="item in ce_list" :value="item.id" :key="item.id">{{ item.realName }} - {{item.phoneNumber}}</Option>
       </Select>
       <br/>
       <br/>
@@ -146,7 +155,7 @@
 </template>
 
 <script type="text/ecmascript-6">
-  import {ser_list, ser_save, ser_Over} from '../../interface';
+  import {ser_list, ser_save, ser_Over,getRule} from '../../interface';
 
   export default {
     name: 'ser_indexForS',
@@ -157,6 +166,8 @@
       this.GetData('p_Alllist',this, this.setData);
       this.GetData('s_AllList',this, this.setData);
       this.GetData('r_Alllist',this, this.setData);
+      this.getRule();
+
     },
     data() {
       return {
@@ -191,6 +202,13 @@
         order: [],
         pages:'',
         userDiscountShow:false,
+        ce_list:[],
+        rule:[],
+        test1:{id:10,realName:'test1'},
+        test2:{id:11,realName:'test2'},
+        test3:{id:12,realName:'test3'},
+        test4:{id:13,realName:'test4'},
+        ordertype:[]
       }
     },
     methods: {
@@ -223,11 +241,25 @@
         }).then((res) => {
           this.order = res.data.results;
           this.pages = res.data.pages;
+          this.ordertype=[];
         }).catch((error) => {
         });
       },
+      getRule(){
+        this.$ajax({
+          method: 'GET',
+          dataType: 'JSON',
+          contentType: 'application/json;charset=UTF-8',
+          headers:{
+            "authToken": this.userInfo.authToken
+          },
+          url:getRule()+'?id='+this.userInfo.storeId
+        }).then( (res) =>{
+          this.rule= res.data.advisorDesignation.split(',');
+        }).catch( (err)=>{})
+
+      },
       ok() {
-        console.log(this.orderINfo);
         for (let variable in this.orderINfo) {
           if (this.orderINfo[variable] === '' || this.orderINfo[variable] === null) {
             this.$Message.warning('请完整填写服务单');
@@ -282,13 +314,11 @@
         for (let it in this.orderINfo.project) {
          project.push(data.project[i].projectId)
         }
-        console.log(project);
         this.orderINfo.project =[];
         this.orderINfo.project = project;
-        console.log(this.orderINfo.project);
 
       },
-      settlement(data) {
+      settlement(data,i) {
         this.settlementF = true;
         this.settleData = data;
       },
@@ -316,6 +346,50 @@
         if(this.orderINfo.customerId==''|| this.serCard == '修改服务单'){
           this.userDiscountShow = false;
         }
+        this.ce_list=this.getCustomerOrder(this.orderINfo.customerId);
+        for(let m in this.e_list){
+          this.ce_list.push(this.e_list[m]);
+        }
+        this.ce_list = this.uniqueArray(this.ce_list,'id');
+
+      },
+      getCustomerOrder(id){
+        let arr=new Array();
+        for(let m in this.rule){
+          switch(this.rule[m])
+          {
+            case '1' :
+              arr.push(this.test1)
+                  break;
+            case '2' :
+              arr.push(this.test2)
+                  break;
+            case '3':
+              arr.push(this.test3)
+                  break;
+            case '4':
+              arr.push(this.test4)
+                  break;
+          }
+        }
+       return arr;
+      },
+      uniqueArray(array,key){
+        var result = [array[0]];
+        for(var i = 1; i < array.length; i++){
+          var item = array[i];
+          var repeat = false;
+          for (var j = 0; j < result.length; j++) {
+            if (item[key] == result[j][key]) {
+              repeat = true;
+              break;
+            }
+          }
+          if (!repeat) {
+            result.push(item);
+          }
+        }
+        return result;
       },
       getPage(current){
         this.getList(current);

@@ -128,7 +128,6 @@
                 if(params.row.roleId == this.postList[i].id ){
                   return h('span',this.postList[i].postName);
                 }
-
               }
             }
           },

@@ -109,6 +109,12 @@ export const ser_findById = function () {
   const API = host + URL;
   return API;
 };
+//新增卡
+export const card_save = function(){
+  const URL = '/app/api/customer/doCard';
+  const API = host + URL;
+  return API;
+}
 //各类问题描述
 export const ser_Problem = function () {
   const URL = '/app/api/customer/findAllProblem';
@@ -170,6 +176,12 @@ export const ser_Over = function () {
   const API = host + URL;
   return API;
 };
+//获取技师排列规则
+export const getRule = function () {
+  const URL = '/app/api/store/findStoreById';
+  const API = host + URL;
+  return API;
+}
 //----------------------------------------------------------------------------------------
 //投诉列表
 export const c_list = function () {
@@ -239,7 +251,18 @@ export const p_Alllist = function () {
   const API = host + URL;
   return API;
 };
-
+//问题列表
+export const pro_list = function() {
+  const URL = '/app/api/problem/findProblemList';
+  const API = host + URL;
+  return API;
+}
+//解决方案列表
+export const solu_list = function () {
+  const URL = '/app/api/problem/solution/findSolutionList';
+  const API = host + URL;
+  return API;
+}
 //------------------------------------------------------------------------
 //房间列表
 export const r_list = function () {
