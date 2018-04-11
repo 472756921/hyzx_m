@@ -12,7 +12,7 @@
         <MenuItem name="s_index"><i class="iconfont icon-createtask"></i>库存管理</MenuItem>
         <MenuItem name="p_index"><i class="iconfont icon-manage"></i>项目管理</MenuItem>
         <MenuItem name="r_index"><i class="iconfont icon-dynamic"></i>经营报表</MenuItem>
-        <MenuItem name="ro_index"><Icon type="ios-home-outline" style="font-size: 18px;"></Icon>房间管理</MenuItem>
+        <MenuItem name="ro_index"><Icon type="ios-heart-outline"></Icon>床位管理</MenuItem>
       </Menu>
       </Col>
       <Col span="21">
@@ -61,7 +61,6 @@ export default {
     }
   },
   created(){
-    console.log(this.userInfo);
     this.myBrowser();
     this.checkUrl();
     this.checkLogin();

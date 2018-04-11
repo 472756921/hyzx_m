@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div>
     <Row :gutter="24" class="option">
       <Col span="4">
@@ -249,7 +249,6 @@
         }).then( (res) =>{
           this.rule= res.data.advisorDesignation.split(',');
         }).catch( (err)=>{})
-
       },
       ok() {
         this.orderINfo.serviceDate = new Date(this.orderINfo.serviceDate).Format('yyyy-MM-dd')

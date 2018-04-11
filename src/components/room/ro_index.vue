@@ -10,27 +10,19 @@
       <Button v-show="serShow" class="hy_btn" @click="serBack">返回主列表</Button>
       </Col>
       <Col span="2">
-      <Button class="hy_btn" @click="newEm">录入房间信息</Button>
+      <Button class="hy_btn" @click="newEm">录入床位信息</Button>
       </Col>
     </Row>
 
     <Table :columns="columns" :data="data"></Table>
 
     <Modal v-model="isShow" :title="r_title" @on-ok="ok" :mask-closable="false">
-      <h3>房间信息</h3>
+      <h3>床位信息</h3>
       <br/>
-      <Input v-model="roomInfo.roomNumber" placeholder="输入房间号" ><span slot="prepend">房间号：</span></Input>
+      <Input v-model="roomInfo.roomNumber" placeholder="输入房间号" ><span slot="prepend">床位号：</span></Input>
       <br>
       <br>
-      <Input v-model="roomInfo.roomName" placeholder="输入房间名" ><span slot="prepend">房间名：</span></Input>
-      <br>
-      <br>
-      <span>房间状态：</span>
-      <Select v-model="roomInfo.roomStatus" style="width: 280px;">
-        <Option value="0">空闲中</Option>
-        <Option value="1">使用中</Option>
-      </Select>
-      <br>
+      <Input v-model="roomInfo.roomName" placeholder="输入房间名" ><span slot="prepend">床位名：</span></Input>
       <br>
     </Modal>
   </div>
@@ -46,11 +38,11 @@
         userInfo: JSON.parse(sessionStorage.getItem('userInfo')),
         columns:[
           {
-            title: '房间号',
+            title: '床位号',
             key: 'roomNumber'
           },
           {
-            title: '房间名',
+            title: '床位名',
             key: 'roomName',
           },
           {

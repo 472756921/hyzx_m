@@ -20,8 +20,8 @@
     data(){
       return {
         rember: false,
-        account: '',
-        pwd: '',
+        account: 'hdq0005',
+        pwd: '123456',
       };
     },
     methods: {

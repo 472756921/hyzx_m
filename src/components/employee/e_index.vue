@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div>
     <Row :gutter="24" class="option">
       <Col span="4">
@@ -37,9 +37,18 @@
         <Radio label="3">出差</Radio>
         <Radio label="4">调休</Radio>
         <Radio label="5">离职</Radio>
+        <Radio label="6">罚金</Radio>
       </RadioGroup>
       <br/>
-      <DatePicker v-if="bjClass!=5" type="daterange" placement="bottom-end" placeholder="选择日期" style="width: 200px;margin-top:20px" :value="bjDate"></DatePicker>
+      <DatePicker v-if="bjClass!=5&&bjClass!=6" type="daterange" placement="bottom-end" placeholder="选择日期" style="width: 200px;margin-top:20px" :value="bjDate"></DatePicker>
+      <br/>
+      <Input v-model="fjnum" v-if="bjClass==6" placeholder="罚金金额" :maxlength="5" ></Input>
+      <br v-if="bjClass==6"/>
+      <br v-if="bjClass==6"/>
+      <Input v-model="fjres" v-if="bjClass==6" type="textarea" placeholder="罚金原因"></Input>
+      <br v-if="bjClass==6"/>
+      <br v-if="bjClass==6"/>
+      <Input v-model="psd" v-if="bjClass==6" placeholder="操作密码"></Input>
     </Modal>
 
     <Modal  v-model="emac" :title="emclass" @on-ok="save_e" :mask-closable="false" >
@@ -88,6 +97,9 @@
       return {
         userInfo: JSON.parse(sessionStorage.getItem('userInfo')),
         index: '',
+        psd: '',
+        fjres: '',
+        fjnum: '',
         employee: {
           realName: '',
           idCardNumber: '',
@@ -465,6 +477,9 @@
             this.remove(this.index)
           }).catch((error) => {
           });
+        }
+        if(this.bjClass == 6) {
+          return false
         }
       },
       serc() {    //搜索员工

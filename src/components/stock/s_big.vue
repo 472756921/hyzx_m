@@ -226,7 +226,6 @@
         saveE() {
           this.stock.expiration = new Date(this.stock.expiration).Format('yyyy-MM-dd')
           this.stock.actualQuantity = 1;
-          console.log(this.stock.expiration);
           this.$ajax({
             method: 'POST',
             dataType: 'JSON',
