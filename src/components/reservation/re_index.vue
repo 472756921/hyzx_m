@@ -34,7 +34,7 @@
       </Select>
       <br/>
       <br/>
-      <div>服务房间</div>
+      <div>服务床位</div>
       <Select v-model="model3" :transfer="true" style="width:200px;">
         <Option v-for="(item, i) in r_list" :value="item.id" :key="i">{{ item.roomNumber}} - {{item.roomName }}</Option>
       </Select>
@@ -96,6 +96,7 @@
       this.GetData('e_Alllist',this, this.setData);
       this.GetData('r_Alllist',this, this.setData);
       this.GetData('p_Alllist',this, this.setData);
+      console.log(this.model2);
     },
     methods: {
       createdOrder() {
@@ -116,7 +117,23 @@
       createdEvent(data) {
         data.data.forEach( (it, i) => {
           it.json.forEach( (ite, ie) => {
-            this.events = [...this.events, { newDate: ite.scheduleDate, newDate2: ite.scheduleEndDate ,model2: ite.projectId, model5: ite.staffId, model3:ite.roomId, model4: ite.customerId, id: ite.id, resourceId: ite.staffId, start: ite.scheduleDate, end: ite.scheduleEndDate, title: ite.customerName+'/'+ite.roomName+ '/' + ite.projectName, color: '#38925E', textColor: '#eee', }];
+            this.events = [
+              ...this.events,
+              {
+                newDate: ite.scheduleDate,
+                newDate2: ite.scheduleEndDate,
+                model2: [ite.projectId],
+                model5: ite.staffId,
+                model3:ite.roomId,
+                model4: ite.customerId,
+                id: ite.id,
+                resourceId: ite.staffId,
+                start: ite.scheduleDate,
+                end: ite.scheduleEndDate,
+                title: ite.customerName+'/'+ite.roomName+ '/' + ite.projectName,
+                color: '#38925E',
+                textColor: '#eee',
+              }];
           })
         })
         setTimeout(()=>{this.createdTable();}, 1000)
@@ -156,7 +173,7 @@
             this.text = '修改预约';
             this.newDate = calEvent.newDate;
             this.newDate2 = calEvent.newDate2;
-            this.model2 = calEvent.model2;
+            this.model2 = [calEvent.model2];
             this.model3 = calEvent.model3;
             this.model4 = calEvent.model4;
             this.model5 = calEvent.model5;
@@ -215,7 +232,7 @@
         this.model1 = true;
         this.newDate = '';
         this.newDate2 = '';
-        this.model2 = '';
+        this.model2 = [];
         this.model3 = '';
         this.model4 = '';
         this.model5 = '';
@@ -257,7 +274,8 @@
             resourceId: this.model5,
             start: this.newDate,
             end: this.newDate2,
-            title: this.p_list.find( (i) => {if (i.id == this.model2) {return i}}).projectName + '/' +this.r_list.find( (i) => {if (i.id == this.model3) {return i}}).roomName + '/' +this.u_list.find( (i) => {if (i.id == this.model4) {return i}}).realName + "-" +this.u_list.find( (i) => {if (i.id == this.model4) {return i}}).phoneNumber,
+            title: this.p_list.find( (i) => {
+              if (i.id == this.model2) {return i}}).projectName + '/' +this.r_list.find( (i) => {if (i.id == this.model3) {return i}}).roomName + '/' +this.u_list.find( (i) => {if (i.id == this.model4) {return i}}).realName + "-" +this.u_list.find( (i) => {if (i.id == this.model4) {return i}}).phoneNumber,
             color: '#38925E',
             textColor: '#eee',
           };
