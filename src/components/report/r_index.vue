@@ -5,7 +5,7 @@
       <TabPane label="店日报" name="name1"><r_day/></TabPane>
       <TabPane label="店月报" name="name2"><r_moth/></TabPane>
       <TabPane label="顾问报表" name="name3"><r_employee/></TabPane>
-      <TabPane label="考勤表" name="name6"><r_attendance/></TabPane>
+      <TabPane label="技师月报" name="name6"><r_attendance/></TabPane>
     </Tabs>
 
   </div>

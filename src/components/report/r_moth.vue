@@ -1,7 +1,7 @@
 <template>
   <div>
-    <DatePicker :value="date" format="yyyy-MM" type="month" placeholder="选择日期" @on-change="getDate"></DatePicker>
-    <Button class="hy_btn" @click="getList">查询</Button>
+    <DatePicker :value="date" format="yyyy-MM" type="month" placeholder="选择日期"></DatePicker>
+    <Button class="hy_btn">查询</Button>
     <br/>
     <br/>
     <h3>报表详情</h3>

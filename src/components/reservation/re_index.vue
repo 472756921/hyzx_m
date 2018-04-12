@@ -12,7 +12,7 @@
       </Col>
     </Row>
     <div id='calendar'></div>
-
+    <div v-if="!over" style="font-size: 20px;text-align: center">加载中，请稍后<dot class="loding">...</dot></div>
     <Modal v-model="model1" :title="text" @on-ok="ok">
       <div>开始时间</div>
       <DatePicker type="datetime" v-model="newDate" placeholder="选择预约日期和时间" :options="options" style="width: 200px"></DatePicker>
@@ -59,6 +59,7 @@
     name: 're_index',
     data () {
       return {
+        over: false,
         orderID: '',
         newDate: '',
         newDate2: '',
@@ -96,7 +97,6 @@
       this.GetData('e_Alllist',this, this.setData);
       this.GetData('r_Alllist',this, this.setData);
       this.GetData('p_Alllist',this, this.setData);
-      console.log(this.model2);
     },
     methods: {
       createdOrder() {
@@ -136,7 +136,7 @@
               }];
           })
         })
-        setTimeout(()=>{this.createdTable();}, 1000)
+        setTimeout(()=>{this.createdTable();}, 2000)
       },
       createdTable() {
         $('#calendar').fullCalendar({
@@ -183,6 +183,7 @@
             this.newyy();
           },
         });
+        this.over = true;
       },
       setData(data, type) {
         if(type == 'u_Alllist'){
@@ -288,5 +289,22 @@
 <style scoped>
   #calendar{
     padding: 20px;
+  }
+  .loding{
+    display: inline-block;
+    height: 1em; line-height: 1;
+    text-align: left;
+    vertical-align: -.25em;
+    overflow: hidden;
+  }
+  .loding:before{
+    display: block;
+    content: '...\A..\A.';
+    white-space: pre-wrap;   /* 也可以是white-space: pre */
+    animation: dot 3s infinite step-start both;
+  }
+  @keyframes dot {
+    33% { transform: translateY(-2em); }
+    66% { transform: translateY(-1em); }
   }
 </style>
