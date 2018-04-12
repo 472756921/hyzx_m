@@ -4,7 +4,7 @@
     <br/>
     <br/>
     <Table :columns="cards" :data="cardsData" :row-class-name="rowClassName"></Table>
-    <Modal v-model="newCardF" title="新增卡">
+    <Modal v-model="newCardF" title="新增卡" @on-ok="addok">
       <div>请选择新增类型</div>
       <RadioGroup v-model="radio" @on-change="getCardList(radio)">
         <Radio label="1">会员卡</Radio>
@@ -15,10 +15,10 @@
       </RadioGroup>
       <br>
       <br>
-      相关卡项
+      相关卡项： <span v-if="cardList==''||cardList==null">空</span>
       <br>
       <CheckboxGroup v-model="model1">
-        <Checkbox v-for="item in cardList" :label="item.id" :key="item.id" style="margin-right: 20px;">{{item.name}}</Checkbox>
+        <Checkbox v-for="item in cardList" :label="item" :key="item.id" style="margin-right: 20px;">{{item.name}}</Checkbox>
       </CheckboxGroup>
     </Modal>
     <Modal v-model="opF" title="卡操作">
@@ -31,7 +31,7 @@
 </template>
 
 <script type="text/ecmascript-6">
-  import {ser_cardList,mer_Card,ext_Card,act_Card,tre_Card,pro_Card} from '../../interface';
+  import {ser_cardList,mer_Card,ext_Card,act_Card,tre_Card,pro_Card,card_save} from '../../interface';
 
   export default {
     name: 'u_cardList',
@@ -239,6 +239,22 @@
       },
       newqu() {
         this.newCardF = true;
+      },
+      addok(){
+        this.$ajax({
+          method: 'POST',
+          dataType: 'JSON',
+          contentType: 'application/json;charset=UTF-8',
+          headers:{
+            "authToken": this.userInfo.authToken
+          },
+          url:card_save(),
+          data:this.model1
+        }).then( (res)=>{
+          this.$Message.success('新增卡成功');
+        }).catch((err)=>{
+          this.$Message.error('失败');
+        })
       },
       datile() {
         this.opF = true;

@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div>
     <Row :gutter="24" class="option">
       <Col span="4">
@@ -22,9 +22,18 @@
       <DatePicker type="datetime" v-model="newDate2" placeholder="选择预约日期和时间" :options="options" style="width: 200px"></DatePicker>
       <br/>
       <br/>
+      <div>用户选择</div>
+      <Select v-model="model4" :transfer="true" filterable style="width:200px" >
+        <Option v-for="item in u_list" :value="item.id" :key="item.id">{{ item.realName }} - {{item.phoneNumber}}</Option>
+      </Select>
+      <div style="margin: 6px 0">{{user}}</div>
+      <br/>
       <div>服务项目</div>
-      <Select v-model="model2" multiple :transfer="true" style="width:200px">
-        <Option v-for="item in p_list" :value="item.id" :key="item.id">{{ item.projectName }}</Option>
+      <Select v-model="model2" :transfer="true" style="width:200px" multiple>
+        <Option v-for="item in p_list" :value="item.id" :key="item.id">
+          <span>{{ item.projectName }}</span>
+          <span style="float:right;color:#ccc">￥{{ item.courseMoney }}</span>
+        </Option>
       </Select>
       <br/>
       <br/>
@@ -40,12 +49,7 @@
       </Select>
       <br/>
       <br/>
-      <div>用户选择</div>
-      <Select v-model="model4" :transfer="true" filterable style="width:200px" >
-        <Option v-for="item in u_list" :value="item.id" :key="item.id">{{ item.realName }} - {{item.phoneNumber}}</Option>
-      </Select>
-      <div style="margin: 6px 0">{{userInfo}}</div>
-      <br/>
+
       <Button v-if="transformF" type="success" @click="createdOrder">生成服务单</Button>
     </Modal>
   </div>
@@ -69,7 +73,7 @@
         model4: '',
         model5: '',
         text: '新建预约',
-        userInfo: '',
+        user: '',
         date: '',
         transformF: false,
         p_list: [],

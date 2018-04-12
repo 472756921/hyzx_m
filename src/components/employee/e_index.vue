@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div>
     <Row :gutter="24" class="option">
       <Col span="4">
@@ -140,7 +140,6 @@
                 if(params.row.roleId == this.postList[i].id ){
                   return h('span',this.postList[i].postName);
                 }
-
               }
             }
           },
