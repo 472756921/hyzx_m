@@ -46,7 +46,7 @@
             key: 'roomName',
           },
           {
-            title: '房间状态',
+            title: '状态',
             key: 'Status',
             render: (h, params) => {
               if(params.row.roomStatus == "0"){

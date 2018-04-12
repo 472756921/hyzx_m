@@ -16,8 +16,9 @@
         <div>
           <div>
               <span class="orderTitle">
-                <span>{{ item.anonymous==false?'现金单':'匿名现金单' }}</span>
-                <span class="orderNumber">（单号：{{item.serviceOrderNumber}} 创建时间：{{item.createTime}}）</span>
+                <div>{{ item.anonymous==false?'服务单':'匿名服务单' }}</div>
+                <div class="orderNumber">单号：{{item.serviceOrderNumber}} </div>
+                <div class="orderNumber">创建时间：{{item.createTime}}</div>
               </span>
             <span class="orderDate">{{ item.date }}</span>
           </div>
@@ -26,7 +27,7 @@
             <span class="orderLititle">顾客姓名：</span>
             <span class="orderLiCon">{{ item.anonymous==false?item.customer:item.customer[0]+'**' }}</span>
             </Col>
-            <Col  span="8">
+            <Col  span="16">
             <span class="orderLititle">顾客电话：</span>
             <span class="orderLiCon">{{ item.phoneNumber }}</span>
             </Col>
@@ -121,7 +122,7 @@
       </Select>
       <br/>
       <br/>
-      <span>服务床位：</span>
+      <span>床位选择：</span>
       <Select v-model="orderINfo.roomId" :transfer="true" style="width:200px">
         <Option v-for="item in r_list" :value="item.id" :disabled="item.roomStatus==1? true: false" :key="item.id">{{ item.roomName }}<span style="float:right;color:#ccc">{{item.roomStatus == 1 ? '已使用':''}}</span></Option>
       </Select>
@@ -229,7 +230,7 @@
           headers: {
             "authToken": sessionStorage.getItem('authToken')
           },
-          url: ser_list() + '?page='+page+'&pageSize=50&orderType=1',
+          url: ser_list() + '?page='+page+'&pageSize=6&orderType=1',
         }).then((res) => {
           this.order = res.data.results;
           this.pages = res.data.pages;
