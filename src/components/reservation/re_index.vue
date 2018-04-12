@@ -23,7 +23,7 @@
       <br/>
       <br/>
       <div>用户选择</div>
-      <Select v-model="model4" :transfer="true" filterable style="width:200px" >
+      <Select v-model="model4" :transfer="true" filterable style="width:200px" @on-change="getUserDiscount()">
         <Option v-for="item in u_list" :value="item.id" :key="item.id">{{ item.realName }} - {{item.phoneNumber}}</Option>
       </Select>
       <div style="margin: 6px 0">{{user}}</div>
@@ -39,7 +39,7 @@
       <br/>
       <div>技师</div>
       <Select v-model="model5" :transfer="true" style="width:200px" >
-        <Option v-for="item in e_list" :value="item.id" :key="item.id">{{ item.realName }} - {{item.phoneNumber}}</Option>
+        <Option v-for="item in ce_list" :value="item.id" :key="item.id">{{ item.realName }} - {{item.phoneNumber}}</Option>
       </Select>
       <br/>
       <br/>
@@ -57,7 +57,7 @@
 
 <script type="text/ecmascript-6">
   import scheduler from '../../../static/scheduler.min';
-  import {re_Alllist, re_save, re_toOrder} from '../../interface';
+  import {re_Alllist, re_save, re_toOrder,getRule} from '../../interface';
 
   export default {
     name: 're_index',
@@ -87,6 +87,13 @@
           }
         },
         events: [],
+        ce_list:[],
+        rule:[],
+        test1:{id:10,realName:'test1'},
+        test2:{id:11,realName:'test2'},
+        test3:{id:12,realName:'test3'},
+        test4:{id:13,realName:'test4'},
+        storeId: JSON.parse(sessionStorage.getItem('userInfo')).storeId
       }
     },
     mounted() {
@@ -101,6 +108,7 @@
       this.GetData('r_Alllist',this, this.setData);
       this.GetData('p_Alllist',this, this.setData);
       console.log(this.model2);
+      this.getRule();
     },
     methods: {
       createdOrder() {
@@ -241,6 +249,72 @@
         this.model4 = '';
         this.model5 = '';
         this.transformF = false;
+        this.user = '';
+      },
+      //获取该门店技师排序规则
+      getRule(){
+        this.$ajax({
+          method: 'GET',
+          dataType: 'JSON',
+          contentType: 'application/json;charset=UTF-8',
+          headers:{
+            "authToken": sessionStorage.getItem('authToken')
+          },
+          url:getRule()+'?id='+this.storeId
+        }).then( (res) =>{
+          this.rule= res.data.advisorDesignation.split(',');
+        }).catch( (err)=>{})
+
+      },
+      //获取用户卡项信息，并将技师排序
+      getUserDiscount(){
+        this.user = '用户卡项信息';
+        this.ce_list=this.getCustomerOrder(this.model4);
+        for(let m in this.e_list){
+          this.ce_list.push(this.e_list[m]);
+        }
+        this.ce_list = this.uniqueArray(this.ce_list,'id');
+
+      },
+      //获取4条规则下的技师
+      getCustomerOrder(id){
+        let arr=new Array();
+        for(let m in this.rule){
+          switch(this.rule[m])
+          {
+            case '1' :
+              arr.push(this.test1)
+              break;
+            case '2' :
+              arr.push(this.test2)
+              break;
+            case '3':
+              arr.push(this.test3)
+              break;
+            case '4':
+              arr.push(this.test4)
+              break;
+          }
+        }
+        return arr;
+      },
+      //去重
+      uniqueArray(array,key){
+        var result = [array[0]];
+        for(var i = 1; i < array.length; i++){
+          var item = array[i];
+          var repeat = false;
+          for (var j = 0; j < result.length; j++) {
+            if (item[key] == result[j][key]) {
+              repeat = true;
+              break;
+            }
+          }
+          if (!repeat) {
+            result.push(item);
+          }
+        }
+        return result;
       },
       ok() {
         if( this.newDate == '' ||  this.newDate2 == '' || this.model2 == '' || this.model3 == '' || this.model4 == '' || this.model5 == '') {

@@ -158,11 +158,18 @@ export const ser_list = function () {
   const API = host + URL;
   return API;
 };
+//保存服务单
 export const ser_save = function () {
   const URL = '/app/api/service/save';
   const API = host + URL;
   return API;
 };
+//编辑服务单
+export const ser_edit = function () {
+  const URL = '/app/api/service/edit';
+  const API = host + URL;
+  return API;
+}
 
 //用户ID查询服务单
 export const ser_OverByUserID = function () {
