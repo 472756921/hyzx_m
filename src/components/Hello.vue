@@ -181,17 +181,18 @@ export default {
     background: #f5f7f9;
     position: relative;
     height: 100%;
+    overflow: hidden;
   }
   .layout-content{
-    min-height: 300px;
     margin: 10px;
-    overflow: hidden;
     background: #fff;
     border-radius: 4px;
     height: 85%;
+    overflow: auto;
   }
   .layout-content-main{
     padding: 10px;
+    overflow: hidden;
   }
   .layout-copy{
     text-align: center;

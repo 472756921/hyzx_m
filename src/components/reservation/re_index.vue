@@ -11,8 +11,11 @@
         <Button class="hy_btn" @click="newyy">新建预约</Button>
       </Col>
     </Row>
+
     <div id='calendar'></div>
-    <div v-if="!over" style="font-size: 20px;text-align: center">加载中，请稍后<dot class="loding">...</dot></div>
+
+    <div v-if="!over" style="font-size: 20px;text-align: center">加载中，请稍后<span class="loding">...</span></div>
+
     <Modal v-model="model1" :title="text" @on-ok="ok">
       <div>开始时间</div>
       <DatePicker type="datetime" v-model="newDate" placeholder="选择预约日期和时间" :options="options" style="width: 200px"></DatePicker>
