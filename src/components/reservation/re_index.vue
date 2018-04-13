@@ -48,7 +48,7 @@
       <br/>
       <div>服务床位</div>
       <Select v-model="model3" :transfer="true" style="width:200px;">
-        <Option v-for="(item, i) in r_list" :value="item.id" :key="i">{{ item.roomNumber}} - {{item.roomName }}</Option>
+        <Option v-for="(item, i) in r_list" :value="item.id" :key="i" :disabled="item.roomStatus==1? true: false">{{ item.roomNumber}} - {{item.roomName }}</Option>
       </Select>
       <br/>
       <br/>
@@ -111,7 +111,6 @@
       this.GetData('e_Alllist',this, this.setData);
       this.GetData('r_Alllist',this, this.setData);
       this.GetData('p_Alllist',this, this.setData);
-      console.log(this.model2);
       this.getRule();
 
     },

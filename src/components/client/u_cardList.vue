@@ -4,7 +4,7 @@
     <br/>
     <br/>
     <Table :columns="cards" :data="cardsData" :row-class-name="rowClassName"></Table>
-    <Modal v-model="newCardF" title="新增卡" @on-ok="addok">
+    <Modal v-model="newCardF" title="新增卡" @on-ok="addok" :mask-closable="false">
       <div>请选择新增类型</div>
       <RadioGroup v-model="radio" @on-change="getCardList(radio)">
         <Radio label="1">会员卡</Radio>
