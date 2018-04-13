@@ -235,6 +235,7 @@
         }).catch((error) => {
         });
       },
+      //获取基础方案
       getBasic(data){
         let arr = data.split(',');
         let list = new Array();
@@ -269,6 +270,7 @@
         return list;
 
       },
+      //获取最优方案
       getBest(data){
         let arr = data.split(',');
         let list = new Array();
@@ -303,9 +305,11 @@
         return list;
 
       },
+      //获取推荐方案
       getRecommend(data){
 
       },
+      //去重
       uniqueArray(array,key){
         var result = [array[0]];
         for(var i = 1; i < array.length; i++){

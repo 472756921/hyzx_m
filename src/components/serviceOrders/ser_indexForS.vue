@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div>
     <Row :gutter="24" class="option">
       <Col span="4">
@@ -16,7 +16,7 @@
           <div>
             <div>
               <span class="orderTitle">
-                <div>{{ item.anonymous?'服务单':'匿名服务单' }}</div>
+                <div>{{ item.anonymous==false?'服务单':'匿名服务单' }}</div>
                 <div class="orderNumber">单号：{{item.serviceOrderNumber}} </div>
                 <div class="orderNumber">创建时间：{{item.createTime}}</div>
               </span>
@@ -25,7 +25,7 @@
             <Row :gutter="10">
               <Col  span="8">
                 <span class="orderLititle">顾客姓名：</span>
-                <span class="orderLiCon">{{ item.anonymous?item.customer:item.customer[0]+'**' }}</span>
+                <span class="orderLiCon">{{ item.anonymous==false?item.customer:item.customer[0]+'**' }}</span>
               </Col>
               <Col  span="16">
                 <span class="orderLititle">顾客电话：</span>
@@ -51,10 +51,6 @@
                 <span class="orderLititle">是否售前：</span>
                 <span class="orderLiCon">{{ item.preSale==0? '否':'是' }}</span>
               </Col>
-             <!-- <Col span="8">
-                <span class="orderLititle">创建时间：</span>
-                <span class="orderLiCon">{{ item.createTime }}</span>
-              </Col>-->
             </Row>
           </div>
           <div v-if="item.project.length!=0">
@@ -70,7 +66,7 @@
           </div>
           <div style="font-size: 16px;margin: 10px auto;" >储值卡付款合计：<span class="price" style="font-size: 16px">￥{{ item.cashAmount }}</span></div>
           <div>结算方式：</div>
-          <RadioGroup v-model="ordertype[i]">
+          <RadioGroup v-model="ordert[i]">
             <Radio label="1" size="small"><span class="orderLititle">消耗：</span>
               <span class="orderLiCon">(余111)</span></Radio>
             <Radio label="2" size="small"> <span class="orderLititle">卡扣：</span>
@@ -79,7 +75,7 @@
               <span class="orderLiCon">(余111)</span></Radio>
           </RadioGroup>
           <div  style="width: 100%;margin: 10px auto;text-align:center">
-            <Button  :class="{hy_btn:ordertype[i]!=''&&ordertype[i]!=null}" @click="settlement(item,i)" :disabled="ordertype[i]==''||ordertype[i]==null">结算</Button>
+            <Button  :class="{hy_btn:ordert[i]!=''&&ordert[i]!=null}" @click="settlement(item,i)" :disabled="ordert[i]==''||ordert[i]==null">结算</Button>
             <Button type="ghost" @click="edit(item)">编辑</Button>
           </div>
         </div>
@@ -89,7 +85,7 @@
     <Page :current="1" :total="pages*10" @on-change="getPage" simple style="margin: 10px auto;text-align: center;"></Page>
 
     <Modal  v-model="service" :title="serCard" @on-ok="ok" :mask-closable="false">
-      <Checkbox v-model="orderINfo.isAnonymous"  :disabled="serCard=='修改服务单'?true:false">匿名服务单</Checkbox>
+      <Checkbox v-model="orderINfo.anonymous"  :disabled="serCard=='修改服务单'?true:false">匿名服务单</Checkbox>
       <br/>
       <br/>
       <span>用户选择：</span>
@@ -143,9 +139,9 @@
       </Select>
       <br/>
       <br/>
-      <div v-if="serCard=='修改服务单'">已选项目：
-        <span v-for="item in p_list">{{ item.projectName }} <span class="price" >￥{{ item.courseMoney }}</span>&nbsp;&nbsp;</span>
-      </div>
+     <!-- <div v-if="serCard=='修改服务单'">已选项目：
+        <span v-for="item in orderINfo.project">{{ item.projectName }} <span class="price" >￥{{ item.money }}</span>&nbsp;&nbsp;</span>
+      </div>-->
       <br/>
     </Modal>
 
@@ -156,7 +152,7 @@
 </template>
 
 <script type="text/ecmascript-6">
-  import {ser_list, ser_save, ser_Over,getRule} from '../../interface';
+  import {ser_list, ser_save, ser_Over,ser_edit,getRule} from '../../interface';
 
   export default {
     name: 'ser_indexForS',
@@ -179,7 +175,7 @@
         settlementF: false,
         settleData:[],
         orderINfo: {
-          isAnonymous: false, //匿名
+          anonymous: false, //匿名
           customerId: '',
           operatorId: '',  //技师
           appoint: '',
@@ -189,6 +185,7 @@
           // createTime: '',
           preSale: '',
         },
+
         u_list: [
           {
             id:'1',
@@ -209,7 +206,7 @@
         test2:{id:11,realName:'test2'},
         test3:{id:12,realName:'test3'},
         test4:{id:13,realName:'test4'},
-        ordertype:[]
+        ordert:[]
       }
     },
     methods: {
@@ -242,7 +239,7 @@
         }).then((res) => {
           this.order = res.data.results;
           this.pages = res.data.pages;
-          this.ordertype=[];
+          this.ordert=[];
         }).catch((error) => {
         });
       },
@@ -261,17 +258,21 @@
 
       },
       ok() {
-        for (let variable in this.orderINfo) {
-          if (this.orderINfo[variable] === '' || this.orderINfo[variable] === null) {
-            this.$Message.warning('请完整填写服务单');
-            return false
-          }
+        if(this.checkNull(this.orderINfo.customerId)||this.checkNull(this.orderINfo.operatorId)||this.checkNull(this.orderINfo.appoint)||this.checkNull(this.orderINfo.roomId)||this.checkNull(this.orderINfo.project)|| this.checkNull(this.orderINfo.preSale)){
+          this.$Message.warning('请完整填写服务单');
+          return false;
         }
         let data = [];
         for (let it in this.orderINfo.project) {
           data = [...data,{projectId: this.orderINfo.project[it]} ]
         }
         this.orderINfo.project = data;
+        let url;
+        if(this.serCard=='修改服务单'){
+          url =ser_edit();
+        }else{
+          url = ser_save();
+        }
         this.$ajax({
           method: 'POST',
           dataType: 'JSON',
@@ -280,7 +281,7 @@
           },
           data: this.orderINfo,
           contentType: 'application/json;charset=UTF-8',
-          url: ser_save(),
+          url: url,
         }).then((res) => {
           this.$Message.success('操作成功');
           this.getList(1);
@@ -296,7 +297,7 @@
         this.serCard = '新建服务单';
         this.service = true;
         this.orderINfo = {
-          isAnonymous: false, //匿名
+          anonymous: false, //是否匿名
           customerId: '',
           operatorId: '',  //技师
           appoint: '',
@@ -305,19 +306,19 @@
           project: [],
           preSale: '',
         };
+        this.ce_list = [];
       },
       edit(data) {
         // this.$Message.warning('暂不提供编辑功能');
        this.serCard = '修改服务单';
        this.service = true;
        this.orderINfo = JSON.parse(JSON.stringify(data));
-       let project =[];
+        let project =[];
         for (let it in this.orderINfo.project) {
-         project.push(data.project[i].projectId)
+         project.push(data.project[it].projectId);
         }
         this.orderINfo.project =[];
         this.orderINfo.project = project;
-
       },
       settlement(data,i) {
         this.settlementF = true;
@@ -394,6 +395,13 @@
       },
       getPage(current){
         this.getList(current);
+      },
+      checkNull(data){
+        if(data == null || data ==''){
+          return true
+        }else{
+          return false;
+        }
       }
     },
   };

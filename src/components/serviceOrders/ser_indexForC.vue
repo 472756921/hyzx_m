@@ -2,16 +2,16 @@
   <div>
     <Row :gutter="24" class="option">
       <Col span="4">
-      <Input v-model="serser" placeholder="输入单号 / 顾客 / 技师" style="margin-top: -1px">
-      <span slot="append" class="serc" @click="serc">查找</span>
-      </Input>
+        <Input v-model="serser" placeholder="输入单号 / 顾客 / 技师" style="margin-top: -1px">
+          <span slot="append" class="serc" @click="serc">查找</span>
+        </Input>
       </Col>
       <Col span="2">
-      <Button class="hy_btn" @click="newEm">新建现金单</Button>
+        <Button class="hy_btn" @click="newEm">新建现金单</Button>
       </Col>
     </Row>
     <Row :gutter="10">
-      <Col span="8"  v-for="(item, i) in order" key="i">
+      <Col span="8"  v-for="(item, i) in order" :key="i">
       <div class="order">
         <div>
           <div>
@@ -24,32 +24,32 @@
           </div>
           <Row :gutter="10">
             <Col  span="8">
-            <span class="orderLititle">顾客姓名：</span>
-            <span class="orderLiCon">{{ item.anonymous?item.customer:item.customer[0]+'**' }}</span>
+              <span class="orderLititle">顾客姓名：</span>
+              <span class="orderLiCon">{{ item.anonymous==false?item.customer:item.customer[0]+'**' }}</span>
             </Col>
             <Col  span="16">
-            <span class="orderLititle">顾客电话：</span>
-            <span class="orderLiCon">{{ item.phoneNumber }}</span>
+              <span class="orderLititle">顾客电话：</span>
+              <span class="orderLiCon">{{ item.phoneNumber }}</span>
             </Col>
             <Col  span="8">
-            <span class="orderLititle">顾客等级：</span>
-            <span class="orderLiCon">{{ item.level}}</span>
+              <span class="orderLititle">顾客等级：</span>
+              <span class="orderLiCon">{{ item.level}}</span>
             </Col>
             <Col span="8">
-            <span class="orderLititle">服务技师：</span>
-            <span class="orderLiCon">{{ item.operatorName }}</span>
+              <span class="orderLititle">服务技师：</span>
+              <span class="orderLiCon">{{ item.operatorName }}</span>
             </Col>
             <Col span="8">
-            <span class="orderLititle">指定：</span>
-            <span class="orderLiCon">{{ item.appoint==1?"是":"否" }}</span>
+              <span class="orderLititle">指定：</span>
+              <span class="orderLiCon">{{ item.appoint==1?"是":"否" }}</span>
             </Col>
             <Col  span="8">
-            <span class="orderLititle">服务床位：</span>
-            <span class="orderLiCon">{{ item.serviceRoom }}</span>
+              <span class="orderLititle">服务床位：</span>
+              <span class="orderLiCon">{{ item.serviceRoom }}</span>
             </Col>
             <Col span="8">
-            <span class="orderLititle">是否售前：</span>
-            <span class="orderLiCon">{{ item.preSale==0? '否':'是' }}</span>
+              <span class="orderLititle">是否售前：</span>
+              <span class="orderLiCon">{{ item.preSale==0? '否':'是' }}</span>
             </Col>
           </Row>
         </div>
@@ -66,7 +66,7 @@
         </div>
         <div style="font-size: 16px;margin: 10px auto;">储值卡付款合计：<span class="price" style="font-size: 16px">￥{{ item.cashAmount }}</span></div>
         <div>结算方式：</div>
-        <RadioGroup v-model="ordertype[i]">
+        <RadioGroup v-model="ordert[i]">
           <Radio label="1" size="small"><span class="orderLititle">消耗：</span>
             <span class="orderLiCon">(余111)</span></Radio>
           <Radio label="2" size="small"> <span class="orderLititle">卡扣：</span>
@@ -75,8 +75,8 @@
             <span class="orderLiCon">(余111)</span></Radio>
         </RadioGroup>
         <div  style="width: 100%;margin: 0 auto;text-align:center">
-          <Button  :class="{hy_btn:ordertype[i]!=''&&ordertype[i]!=null}" @click="settlement(item,i)" :disabled="ordertype[i]==''||ordertype[i]==null">结算</Button>
-          <Button type="ghost" @click="edit(i)">编辑</Button>
+          <Button  :class="{hy_btn:ordert[i]!=''&&ordert[i]!=null}" @click="settlement(item,i)" :disabled="ordert[i]==''||ordert[i]==null">结算</Button>
+          <Button type="ghost" @click="edit(item)">编辑</Button>
         </div>
       </div>
       </Col>
@@ -84,7 +84,7 @@
     <Page :current="1" :total="pages*10" @on-change="getPage" simple style="margin: 10px auto;text-align: center;"></Page>
 
     <Modal  v-model="service" :title="serCard" @on-ok="ok" :mask-closable="false">
-      <Checkbox v-model="orderINfo.isAnonymous"  :disabled="serCard=='修改现金单'?true:false">匿名现金单</Checkbox>
+      <Checkbox v-model="orderINfo.anonymous"  :disabled="serCard=='修改现金单'?true:false">匿名现金单</Checkbox>
       <br/>
       <br/>
       <span>用户选择：</span>
@@ -128,10 +128,10 @@
       </Select>
       <br/>
       <br/>
-      <span>服务时间：</span>
+      <!--<span>服务时间：</span>
       <DatePicker type="datetime" placeholder="选择日期" style="width: 200px" v-model="orderINfo.serviceDate"></DatePicker>
       <br/>
-      <br/>
+      <br/>-->
       <span v-if="serCard!='修改现金单'">项目选择：</span>
       <span v-if="serCard=='修改现金单'">增加项目：</span>
       <Select v-model="orderINfo.project" :transfer="true" multiple>
@@ -142,9 +142,9 @@
       </Select>
       <br/>
       <br/>
-      <div v-if="serCard=='修改现金单'">已选项目：
+      <!--<div v-if="serCard=='修改现金单'">已选项目：
         <span v-for="item in p_list">{{ item.projectName }} <span class="price" >￥{{ item.money }}</span>&nbsp;&nbsp;</span>
-      </div>
+      </div>-->
       <br/>
     </Modal>
 
@@ -155,7 +155,7 @@
 </template>
 
 <script type="text/ecmascript-6">
-  import {ser_list, ser_save, ser_Over,getRule} from '../../interface';
+  import {ser_list, ser_save, ser_Over,ser_edit,getRule} from '../../interface';
 
   export default {
     name: 'ser_indexForS',
@@ -177,14 +177,14 @@
         service: false,
         settlementF: false,
         orderINfo: {
-          isAnonymous: false, //匿名
+          anonymous: false, //是否匿名，否
           customerId: '',
           operatorId: '',  //技师
           appoint: '',
           roomId: '',
           orderType: '1',
           project: [],
-          serviceDate: '',
+          // serviceDate: '',
           preSale: '',
         },
         u_list: [],
@@ -201,7 +201,7 @@
         test2:{id:11,realName:'test2'},
         test3:{id:12,realName:'test3'},
         test4:{id:13,realName:'test4'},
-        ordertype:[]
+        ordert:[]
       }
     },
     methods: {
@@ -234,7 +234,7 @@
         }).then((res) => {
           this.order = res.data.results;
           this.pages = res.data.pages;
-          this.ordertype=[];
+          this.ordert=[];
         }).catch((error) => {
         });
       },
@@ -252,18 +252,22 @@
         }).catch( (err)=>{})
       },
       ok() {
-        this.orderINfo.serviceDate = new Date(this.orderINfo.serviceDate).Format('yyyy-MM-dd')
-        for (let variable in this.orderINfo) {
-          if (this.orderINfo[variable] === '' || this.orderINfo[variable] === null) {
-            this.$Message.warning('请完整填写现金单');
-            return false
-          }
+        // this.orderINfo.serviceDate = new Date(this.orderINfo.serviceDate).Format('yyyy-MM-dd')
+        if(this.checkNull(this.orderINfo.customerId)||this.checkNull(this.orderINfo.operatorId)||this.checkNull(this.orderINfo.appoint)||this.checkNull(this.orderINfo.roomId)||this.checkNull(this.orderINfo.project)|| this.checkNull(this.orderINfo.preSale)){
+          this.$Message.warning('请完整填写现金单');
+          return false;
         }
         let data = [];
         for (let it in this.orderINfo.project) {
           data = [...data,{projectId: this.orderINfo.project[it]} ]
         }
         this.orderINfo.project = data;
+        let url;
+        if(this.serCard=='修改现金单'){
+          url =ser_edit();
+        }else{
+          url = ser_save();
+        }
         this.$ajax({
           method: 'POST',
           dataType: 'JSON',
@@ -272,7 +276,7 @@
           },
           data: this.orderINfo,
           contentType: 'application/json;charset=UTF-8',
-          url: ser_save(),
+          url: url,
         }).then((res) => {
           this.$Message.success('操作成功');
           this.getList(1);
@@ -289,7 +293,7 @@
         this.userDiscountShow = false;
         this.service = true;
         this.orderINfo= {
-          isAnonymous: false, //匿名
+          anonymous: false, //匿名
           customerId: '',
           operatorId: '',  //技师
           appoint: '',
@@ -299,13 +303,20 @@
           serviceDate: '',
           preSale: '',
         };
+        this.ce_list = [];
 
       },
-      edit(i) {
-//        this.serCard = '修改现金单';
-//        this.service = true;
-//        this.serviceDate = tem.date;
-        this.$Message.warning('暂不提供编辑功能');
+      edit(data) {
+       this.serCard = '修改现金单';
+       this.service = true;
+       // this.serviceDate = item.date;
+        this.orderINfo = JSON.parse(JSON.stringify(data));
+        let project =[];
+        for (let it in this.orderINfo.project) {
+          project.push(data.project[it].projectId);
+        }
+        this.orderINfo.project =[];
+        this.orderINfo.project = project;
       },
       settlement(data,i) {
         this.settlementF = true;
@@ -378,6 +389,13 @@
       },
       getPage(current){
         this.getList(current);
+      },
+      checkNull(data){
+        if(data == null || data ==''){
+          return true
+        }else{
+          return false;
+        }
       }
     },
   };

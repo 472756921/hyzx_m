@@ -4,7 +4,7 @@
     <br/>
     <br/>
     <Table :columns="cards" :data="cardsData" :row-class-name="rowClassName"></Table>
-    <Modal v-model="newCardF" title="新增卡" @on-ok="addok">
+    <Modal v-model="newCardF" title="新增卡" @on-ok="addok" :mask-closable="false">
       <div>请选择新增类型</div>
       <RadioGroup v-model="radio" @on-change="getCardList(radio)">
         <Radio label="1">会员卡</Radio>
@@ -17,9 +17,65 @@
       <br>
       相关卡项： <span v-if="cardList==''||cardList==null">空</span>
       <br>
-      <CheckboxGroup v-model="model1">
-        <Checkbox v-for="item in cardList" :label="item" :key="item.id" style="margin-right: 20px;">{{item.name}}</Checkbox>
-      </CheckboxGroup>
+      <RadioGroup v-model="model1">
+        <Radio v-for="item in cardList" :label="item" :key="item.id" style="margin-right: 20px;">{{item.name}}</Radio>
+      </RadioGroup>
+      <br>
+      <br>
+      卡相关信息： <span v-if="cardList==''||cardList==null">空</span>
+      <div class="card" v-if="model1.type==1">
+        会员卡级别名称：{{model1.info.membershipName}}<br>
+        会员价格：{{model1.info.membershipMoney}}<br>
+        单次折扣：{{model1.info.projectDiscount}}<br>
+        产品折扣：{{model1.info.productDiscount}}<br>
+        有效期：{{model1.info.membershipValidity}}个月<br>
+        会员尊享：尊享项目{{model1.info.enjoy[0].projectName}}{{model1.info.enjoy[0].enjoyNumber}}次，有效期{{model1.info.enjoy[0].enjoyValidity}}月<br>
+        会员日：每月{{model1.info.memberDay}} 日或第{{model1.info.memberDayNtoStore}}次到店第{{model1.info.memberDayNProject}}个项目，折扣{{model1.info.memberDayDiscount}}<br>
+        会员返现：第{{model1.info.memberReturnNtoStore}} 次到店第{{model1.info.memberReturnNProject}} 个项目，返现{{model1.info.returnAmount}} 元 ，有效期{{model1.info.returnValidity}} 个月<br>
+        注意事项：
+      </div>
+      <div class="card" v-if="model1.type == 2">
+        名称：{{model1.info.extensionName}}<br>
+        卡扣价格：{{model1.info.bucklePrice}}<br>
+        现金价格：{{model1.info.cashPrice}}<br>
+        有效期：{{model1.info.extensionValidity}}天<br>
+        是否计算业绩：{{model1.info.performance == '1'?'是':'否'}}<br>
+        是否计算实操：{{model1.info.actualOperation == '1'?'是':'否'}}<br>
+        是否计算手工：{{model1.info.manualFee == '1'?'是':'否'}}<br>
+        拓客项目：<span v-for="item in model1.info.project">{{item.projectName}} - {{item.extensionNumber}}次 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><br>
+      </div>
+      <div class="card" v-if="model1.type==3">
+        名称：{{model1.info.activityName}}<br>
+        卡扣价格：{{model1.info.activityBucklePrice}}<br>
+        现金价格：{{model1.info.activityCashPrice}}<br>
+        卡有效期：{{model1.info.activityValidity}}个月<br>
+        活动开始时间：{{model1.info.beginTime}}<br>
+        活动结束时间：{{model1.info.endTime}}<br>
+        返现优惠： 适用范围为{{model1.info.returnMode}}，返现{{model1.info.returnAmount}}，有效期{{model1.info.returnValidity}} 个月<br>
+        特价秒杀：<span v-for="item in model1.info.apecialSecondKill">项目{{item.projectName}}{{item.specialNumber}}套，秒杀价格{{item.specialMoney}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><br>
+        到店赠送：第{{model1.info.memberDayNtoStore}} 次到店赠送项目<span v-for="item in model1.info.toStoreProject">{{item.projectName}}{{item.activityNumber}}次&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><br>
+        享受尊享：<span v-for="item in model1.info.project ">项目{{item.projectName}}{{item.activityNumber}},有效期{{item.activityValidity}}个月&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><br>
+        老带新：赠送项目<span v-for="item in model1.info.newCustomerParticipation">{{item.projectName}}{{item.activityNumber}}次&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><br>
+        产品秒杀：<span v-for="item in model1.info.productSecondKill">产品{{item.projectName}},现金秒杀价格{{item.cashSecondPrice}},卡扣秒杀价格{{item.buckleTheSecondPrice}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><br>
+        卡扣优惠：<br>
+        隐藏显示：疗程组合卡 <span v-for="item in model1.info.courseOfActivityCard">{{item.treatmentName}}卡，</span><br>
+      </div>
+      <div class="card" v-if="model1.type==4">
+        名称：{{model1.info.treatmentName}}<br>
+        卡扣价格：{{model1.info.bucklePrice}} <br>
+        现金价格：{{model1.info.cashPrice}}<br>
+        有效期：{{model1.info.treatmentCardValidity}}个月 <br>
+        是否显示：{{model1.info.displays=='1'?'是':'否'}}<br>
+        项目组合：<span v-for="item in model1.info.project">{{item.projectName}}-{{item.extensionNumber}}次&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><br>
+      </div>
+      <div class="card" v-if="model1.type==5">
+        名称：{{model1.info.productCardName}}<br>
+        卡扣价格：{{model1.info.bucklePrice}}<br>
+        现金价格：{{model1.info.cashPrice}}<br>
+        金额：{{model1.info.productCardMoney}}<br>
+        有效期：{{model1.info.productCardValidity}}个月 <br>
+      </div>
+
     </Modal>
     <Modal v-model="opF" title="卡操作">
       <RadioGroup v-model="optortion">
@@ -40,7 +96,7 @@
         userInfo: JSON.parse(sessionStorage.getItem('userInfo')),
         newCardF: false,
         opF: false,
-        radio: 1,
+        radio: '1',
         optortion: 1,
         cards: [
           {key: 'openTime', title: '购卡日期'},
@@ -139,6 +195,8 @@
             this.merCard.push({
               id: res.data[i].id,
               name: res.data[i].membershipName,
+              type: 1,
+              info: res.data[i]
             });
           }
         }).catch( (err) =>{});
@@ -156,6 +214,8 @@
             this.extCard.push({
               id: res.data[i].id,
               name: res.data[i].extensionName,
+              type: 2,
+              info: res.data[i]
             });
           }
         }).catch( (err) =>{});
@@ -174,6 +234,8 @@
             this.actCard.push({
               id: res.data[i].id,
               name: res.data[i].activityName,
+              type: 3,
+              info: res.data[i]
             });
           }
         }).catch( (err) =>{});
@@ -192,6 +254,9 @@
             this.treCard.push({
               id: res.data[i].id,
               name: res.data[i].treatmentName,
+              type: 4,
+              info: res.data[i]
+
             });
           }
         }).catch( (err) =>{});
@@ -210,12 +275,13 @@
             this.proCard.push({
               id: res.data[i].id,
               name: res.data[i].productCardName,
+              type: 5,
+              info: res.data[i]
             });
           }
         }).catch( (err) =>{});
       },
       getCardList(type){
-
         if(type== 1){
           //会员卡
           this.cardList = this.merCard;
@@ -236,9 +302,12 @@
           //产品卡
           this.cardList = this.proCard;
         }
+        this.model1 =[];
       },
       newqu() {
         this.newCardF = true;
+        this.radio = '1';
+        this.getCardList(this.radio);
       },
       addok(){
         this.$ajax({
@@ -249,7 +318,7 @@
             "authToken": this.userInfo.authToken
           },
           url:card_save(),
-          data:this.model1
+          data:this.model1.id
         }).then( (res)=>{
           this.$Message.success('新增卡成功');
         }).catch((err)=>{
@@ -293,5 +362,12 @@
   .center{
     margin: 10px auto;
     text-align: center;
+  }
+  .card{
+    line-height: 25px;
+    padding-top: 10px;
+    padding-left: 20px;
+    font-size: 12px;
+    color: #888;
   }
 </style>

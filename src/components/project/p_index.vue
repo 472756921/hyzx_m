@@ -72,15 +72,12 @@ import {p_list,pro_list} from '../../interface';
             key: 'effect',
             render: (h,params) =>{
               let arr = params.row.effect.split(',');
+              let pro = new Array();
               for(let i in arr){
-                for(let j in this.problem){
-                  if(this.problem[j].id == arr[i]){
-                    this.pro = this.problem[j].problem;
-                    return h('span', this.problem[j].problem+',');
-                  }
-                }
-
+                pro.push(this.searchprojectName(arr[i]));
               }
+
+              return h('span',pro.toString());
             }
           },
           {
@@ -110,7 +107,7 @@ import {p_list,pro_list} from '../../interface';
         ],
         data: [],
         problem:[],
-        pro:'',
+        pro:[],
         type:['身体类','面护类'],
         attributes:['到店率','功效类','保养类']
       }
@@ -137,9 +134,22 @@ import {p_list,pro_list} from '../../interface';
       edit(index) {
         this.emac = true;
         this.project = this.data[index];
+        let arr = this.project.effect.split(',');
+        let pro = new Array();
+        for(let i in arr){
+          pro.push(this.searchprojectName(arr[i]));
+        }
+        this.pro = pro.toString();
       },
       ok() {   //
 
+      },
+      searchprojectName(id){
+        for(let j in this.problem){
+          if(id == this.problem[j].id){
+            return this.problem[j].problem
+          }
+        }
       },
       serc() {    //搜索
         if (this.name == '') {
