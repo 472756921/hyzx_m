@@ -17,8 +17,8 @@
       <br>
       相关卡项： <span v-if="cardList==''||cardList==null">空</span>
       <br>
-      <RadioGroup v-model="model1">
-        <Radio v-for="item in cardList" :label="item" :key="item.id" style="margin-right: 20px;">{{item.name}}</Radio>
+      <RadioGroup v-model="model" @on-change="onc">
+        <Radio v-for="(item,index) in cardList" :label="index" :key="item.id" style="margin-right: 20px;">{{item.name}}</Radio>
       </RadioGroup>
       <br>
       <br>
@@ -75,7 +75,9 @@
         金额：{{model1.info.productCardMoney}}<br>
         有效期：{{model1.info.productCardValidity}}个月 <br>
       </div>
-
+      <br><br>
+      备注：
+      <Input v-model="beizu" type="textarea" :autosize="{minRows: 2,maxRows: 5}"/>
     </Modal>
     <Modal v-model="opF" title="卡操作">
       <RadioGroup v-model="optortion">
@@ -99,10 +101,11 @@
         radio: '1',
         optortion: 1,
         cards: [
+          {key: 'cardName',title:'卡名称'},
           {key: 'openTime', title: '购卡日期'},
           {key: 'endTime', title: '过期日期'},
-          {key: 'cardName', title: '卡类'},
-          {key: 'status', title: '状态', render: (h, p)=>{if(p.row.status == 1){return h('span','正常')}else if(p.row.status == 0){return h('span','禁用')}else if(p.row.status == 2){return h('span','过期')}}},
+          {key: 'cardTypeName', title: '卡类'},
+          {key: 'status', title: '状态', render: (h, p)=>{if(p.row.cardStatus == 1){return h('span','正常')}else if(p.row.cardStatus == 0){return h('span','禁用')}else if(p.row.cardStatus == 2){return h('span','过期')}}},
           {key: 'action', title: '操作',render: (h, params) => {
             return h('div', [
               h('Button', {
@@ -156,7 +159,9 @@
         actCard:[],
         treCard:[],
         proCard:[],
+        model:'',
         model1:[],
+        beizu:''
       }
     },
     created() {
@@ -302,7 +307,25 @@
           //产品卡
           this.cardList = this.proCard;
         }
-        this.model1 =[];
+        this.model ='';
+        this.model1=[];
+      },
+      onc(){
+        if(this.radio =='1' ){
+          this.model1 = this.merCard[this.model];
+        }
+        if(this.radio == '2'){
+          this.model1 = this.extCard[this.model];
+        }
+        if(this.radio == '3'){
+          this.model1 = this.actCard[this.model];
+        }
+        if(this.radio == '4'){
+          this.model1 = this.treCard[this.model];
+        }
+        if(this.radio == '5'){
+          this.model1 = this.proCard[this.model];
+        }
       },
       newqu() {
         this.newCardF = true;
@@ -318,9 +341,17 @@
             "authToken": this.userInfo.authToken
           },
           url:card_save(),
-          data:this.model1.id
+          data:{
+            bz: this.beizu,
+            cardId: this.model1.id,
+            type: this.model1.type,
+            userId: this.userID,
+            cardName:this.model1.name
+
+          }
         }).then( (res)=>{
           this.$Message.success('新增卡成功');
+          this.getList(1,this.userID);
         }).catch((err)=>{
           this.$Message.error('失败');
         })

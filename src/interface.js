@@ -90,7 +90,6 @@ export const u_edit = function () {
   const API = host + URL;
   return API;
 };
-
 //用户ID查询消费
 export const ser_Bill = function () {
   const URL = '/app/api/customer/findBillById';
@@ -111,7 +110,7 @@ export const ser_findById = function () {
 };
 //新增卡
 export const card_save = function(){
-  const URL = '/app/api/customer/doCard';
+  const URL = '/app/api/customer/addCard';
   const API = host + URL;
   return API;
 }
@@ -158,6 +157,12 @@ export const ser_list = function () {
   const API = host + URL;
   return API;
 };
+//获取用户卡项等信息
+export const getUserCard = function () {
+  const URL = '/app/api/customer/findOwningCardById';
+  const API = host + URL;
+  return API;
+}
 //保存服务单
 export const ser_save = function () {
   const URL = '/app/api/service/save';

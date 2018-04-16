@@ -309,7 +309,9 @@
           },
           url: url,
         }).then((res) => {
-          this.$Message.success('操作成功')
+          this.$Message.success('操作成功');
+          this.getList(1);
+
         }).catch((error) => {
         });
       },

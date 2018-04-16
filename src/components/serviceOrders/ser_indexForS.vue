@@ -93,12 +93,9 @@
         <Option v-for="item in u_list"  :value="item.id" :key="item.id">{{ item.realName }} - {{item.phoneNumber}}</Option>
       </Select>
       <div v-show="userDiscountShow" style="margin-top: 10px;">
-        <span style="display: inline-block;vertical-align: top;color: orange;">用户优惠：</span>
+        <span style="display: inline-block;vertical-align: top;color: orange;">用户卡项信息：</span><span v-if="userCardInfo==''||userCardInfo==null">暂无卡项</span>
         <span style="display: inline-block;">
-          <div>会员卡：A卡，所剩项目：美容a项目；</div>
-          <div>会员卡：A卡，所剩项目：美容a项目；</div>
-          <div>会员卡：A卡，所剩项目：美容a项目；</div>
-          <div>会员卡：A卡，所剩项目：美容a项目；</div>
+          <div v-for="item in userCardInfo">卡名：{{item.cardName}}，所剩项目：美容a项目；</div>
         </span>
       </div>
       <br>
@@ -139,9 +136,6 @@
       </Select>
       <br/>
       <br/>
-     <!-- <div v-if="serCard=='修改服务单'">已选项目：
-        <span v-for="item in orderINfo.project">{{ item.projectName }} <span class="price" >￥{{ item.money }}</span>&nbsp;&nbsp;</span>
-      </div>-->
       <br/>
     </Modal>
 
@@ -152,7 +146,7 @@
 </template>
 
 <script type="text/ecmascript-6">
-  import {ser_list, ser_save, ser_Over,ser_edit,getRule} from '../../interface';
+  import {ser_list, ser_save, ser_Over,ser_edit,getRule,getUserCard} from '../../interface';
 
   export default {
     name: 'ser_indexForS',
@@ -185,6 +179,7 @@
           // createTime: '',
           preSale: '',
         },
+        userCardInfo:'',
 
         u_list: [
           {
@@ -348,6 +343,17 @@
         if(this.orderINfo.customerId==''|| this.serCard == '修改服务单'){
           this.userDiscountShow = false;
         }
+        this.$ajax({
+          method: 'GET',
+          dataType: 'JSON',
+          contentType:'application/json;charset=UTF-8',
+          headers:{
+            "authToken":this.userInfo.authToken,
+          },
+          url:getUserCard()+'?id='+this.orderINfo.customerId
+        }).then( (res) =>{
+          this.userCardInfo = res.data.results;
+        }).catch( (err)=>{ })
         this.ce_list=this.getCustomerOrder(this.orderINfo.customerId);
         for(let m in this.e_list){
           this.ce_list.push(this.e_list[m]);

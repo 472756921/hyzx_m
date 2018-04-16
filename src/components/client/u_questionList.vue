@@ -39,7 +39,7 @@
 
 <script type="text/ecmascript-6">
   import imgUp from '../ut/imgUp.vue';
-  import { ser_Problem, ser_UserProblem, ser_ProblemSave, ser_findPlan, ser_problemBegin ,problemList , solu_list} from '../../interface';
+  import { ser_Problem, ser_UserProblem, ser_ProblemSave, ser_findPlan, ser_problemBegin ,problemList , solu_list,getUserCard} from '../../interface';
 
   export default {
     name: 'u_questionList',
@@ -104,7 +104,8 @@
         selectP:[],
         pList:[],
         solutionList:[],
-        description:[]
+        description:[],
+        userCardInfo:''
       }
     },
     watch: {
@@ -303,11 +304,34 @@
           })
         }
         return list;
-
       },
       //获取推荐方案
       getRecommend(data){
+        let arr = new Array();
+        let list = new Array();
+        arr = this.getBest(data);
+        this.$ajax({
+          method: 'GET',
+          dataType: 'JSON',
+          contentType:'application/json;charset=UTF-8',
+          headers:{
+            "authToken":this.userInfo.authToken,
+          },
+          url:getUserCard()+'?id='+this.userID
+        }).then( (res) =>{
+          this.userCardInfo = res.data.results;
+        }).catch( (err)=>{ })
+        for(let i in this.userCardInfo){
+          for( let j in this.userCardInfo.project){
+            arr.push({
+              id: this.userCardInfo.project[i][j].id,
+              name: this.userCardInfo.project[i][j].name
+            })
+          }
 
+        }
+        list = this.uniqueArray(arr,'id');
+        return list;
       },
       //去重
       uniqueArray(array,key){

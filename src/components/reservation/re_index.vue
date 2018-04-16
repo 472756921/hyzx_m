@@ -29,7 +29,13 @@
       <Select v-model="model4" :transfer="true" filterable style="width:200px" @on-change="getUserDiscount()">
         <Option v-for="item in u_list" :value="item.id" :key="item.id">{{ item.realName }} - {{item.phoneNumber}}</Option>
       </Select>
-      <div style="margin: 6px 0">{{user}}</div>
+      <div style="margin-top: 10px;">
+        <span style="display: inline-block;vertical-align: top;color: orange;">用户卡项信息：</span><span v-if="userCardInfo==''||userCardInfo==null">暂无卡项</span>
+        <br>
+        <span style="display: inline-block;">
+          <div v-for="item in userCardInfo">卡名：{{item.cardName}}，所剩项目：美容a项目；</div>
+        </span>
+      </div>
       <br/>
       <div>服务项目</div>
       <Select v-model="model2" :transfer="true" style="width:200px" multiple>
@@ -60,7 +66,7 @@
 
 <script type="text/ecmascript-6">
   import scheduler from '../../../static/scheduler.min';
-  import {re_Alllist, re_save, re_toOrder,getRule} from '../../interface';
+  import {re_Alllist, re_save, re_toOrder,getRule,getUserCard} from '../../interface';
 
   export default {
     name: 're_index',
@@ -97,7 +103,9 @@
         test2:{id:11,realName:'test2'},
         test3:{id:12,realName:'test3'},
         test4:{id:13,realName:'test4'},
-        storeId: JSON.parse(sessionStorage.getItem('userInfo')).storeId
+        storeId: JSON.parse(sessionStorage.getItem('userInfo')).storeId,
+        userCardInfo:''
+
       }
     },
     mounted() {
@@ -273,7 +281,17 @@
       },
       //获取用户卡项信息，并将技师排序
       getUserDiscount(){
-        this.user = '用户卡项信息';
+        this.$ajax({
+          method: 'GET',
+          dataType: 'JSON',
+          contentType:'application/json;charset=UTF-8',
+          headers:{
+            "authToken":sessionStorage.getItem('authToken'),
+          },
+          url:getUserCard()+'?id='+this.model4,
+        }).then( (res) =>{
+          this.userCardInfo = res.data.results;
+        }).catch( (err)=>{ })
         this.ce_list=this.getCustomerOrder(this.model4);
         for(let m in this.e_list){
           this.ce_list.push(this.e_list[m]);
