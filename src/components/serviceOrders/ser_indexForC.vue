@@ -2,12 +2,12 @@
   <div>
     <Row :gutter="24" class="option">
       <Col span="4">
-      <Input v-model="serser" placeholder="输入单号 / 顾客 / 技师" style="margin-top: -1px">
-      <span slot="append" class="serc" @click="serc">查找</span>
-      </Input>
+        <Input v-model="serser" placeholder="输入单号 / 顾客 / 技师" style="margin-top: -1px">
+          <span slot="append" class="serc" @click="serc">查找</span>
+        </Input>
       </Col>
       <Col span="2">
-      <Button class="hy_btn" @click="newEm">新建现金单</Button>
+        <Button class="hy_btn" @click="newEm">新建现金单</Button>
       </Col>
     </Row>
     <Row :gutter="10">
@@ -15,41 +15,41 @@
       <div class="order">
         <div>
           <div>
-              <span class="orderTitle">
-                <div>{{ item.anonymous==false?'服务单':'匿名服务单' }}</div>
-                <div class="orderNumber">单号：{{item.serviceOrderNumber}} </div>
-                <div class="orderNumber">创建时间：{{item.createTime}}</div>
-              </span>
+            <span class="orderTitle">
+              <div>{{ item.anonymous?'服务单':'匿名服务单' }}</div>
+              <div class="orderNumber">单号：{{item.serviceOrderNumber}} </div>
+              <div class="orderNumber">创建时间：{{item.createTime}}</div>
+            </span>
             <span class="orderDate">{{ item.date }}</span>
           </div>
           <Row :gutter="10">
             <Col  span="8">
-            <span class="orderLititle">顾客姓名：</span>
-            <span class="orderLiCon">{{ item.anonymous==false?item.customer:item.customer[0]+'**' }}</span>
+              <span class="orderLititle">顾客姓名：</span>
+              <span class="orderLiCon">{{ item.anonymous==false?item.customer:item.customer[0]+'**' }}</span>
             </Col>
             <Col  span="16">
-            <span class="orderLititle">顾客电话：</span>
-            <span class="orderLiCon">{{ item.phoneNumber }}</span>
+              <span class="orderLititle">顾客电话：</span>
+              <span class="orderLiCon">{{ item.phoneNumber }}</span>
             </Col>
             <Col  span="8">
-            <span class="orderLititle">顾客等级：</span>
-            <span class="orderLiCon">{{ item.level}}</span>
+              <span class="orderLititle">顾客等级：</span>
+              <span class="orderLiCon">{{ item.level}}</span>
             </Col>
             <Col span="8">
-            <span class="orderLititle">服务技师：</span>
-            <span class="orderLiCon">{{ item.operatorName }}</span>
+              <span class="orderLititle">服务技师：</span>
+              <span class="orderLiCon">{{ item.operatorName }}</span>
             </Col>
             <Col span="8">
-            <span class="orderLititle">指定：</span>
-            <span class="orderLiCon">{{ item.appoint==1?"是":"否" }}</span>
+              <span class="orderLititle">指定：</span>
+              <span class="orderLiCon">{{ item.appoint==1?"是":"否" }}</span>
             </Col>
             <Col  span="8">
-            <span class="orderLititle">服务床位：</span>
-            <span class="orderLiCon">{{ item.serviceRoom }}</span>
+              <span class="orderLititle">服务床位：</span>
+              <span class="orderLiCon">{{ item.serviceRoom }}</span>
             </Col>
             <Col span="8">
-            <span class="orderLititle">是否售前：</span>
-            <span class="orderLiCon">{{ item.preSale==0? '否':'是' }}</span>
+              <span class="orderLititle">是否售前：</span>
+              <span class="orderLiCon">{{ item.preSale==0? '否':'是' }}</span>
             </Col>
           </Row>
         </div>
