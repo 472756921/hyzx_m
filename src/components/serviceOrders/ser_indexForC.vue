@@ -16,7 +16,7 @@
         <div>
           <div>
             <span class="orderTitle">
-              <div>{{ item.anonymous?'服务单':'匿名服务单' }}</div>
+              <div>{{ item.anonymous==false?'服务单':'匿名服务单' }}</div>
               <div class="orderNumber">单号：{{item.serviceOrderNumber}} </div>
               <div class="orderNumber">创建时间：{{item.createTime}}</div>
             </span>

@@ -6,14 +6,24 @@
           <span slot="append" class="serc" @click="serc">查找</span>
         </Input>
       </Col>
-      <Col span="2">
+      <Col span="3">
         <Button class="hy_btn" @click="newEm">新增员工</Button>
+      </Col>
+      <Col span="2">
+      <Button class="hy_btn" @click="newTe">店长指定</Button>
       </Col>
       <Col span="2"  push="16">
         <span class="herf_a" @click="lizhi">离职员工</span>
       </Col>
     </Row>
     <Table :columns="columns" :data="data" :row-class-name="rowClassName"></Table>
+
+    <Modal v-model="onTe" title="店长指定技师" :mask-closable="false" @on-ok="teok()">
+      选择技师：
+      <Select v-model="teData" style="width:200px">
+        <Option v-for="item in data" :value="item.id" :key="item.id">{{item.realName}}</Option>
+      </Select>
+    </Modal>
 
     <Modal  v-model="kqF" title="考勤打卡" @on-ok="ok" :mask-closable="false" >
       <div>现在时间：{{date}}</div>
@@ -89,7 +99,7 @@
 </template>
 
 <script type="text/ecmascript-6">
-  import { e_list, e_list_byID, e_save, e_edit, e_outList, e_out,e_postList } from '../../interface';
+  import { e_list, e_list_byID, e_save, e_edit, e_outList, e_out,e_postList,saveTech ,getTech} from '../../interface';
 
   export default {
     name: 'e_index',
@@ -108,6 +118,7 @@
           groupId: '',
           gradeId: '',
           roleId: '',
+          roleName:''
         },
         emclass: '', //新增、修改员工 modal标题
         bkDate: '',
@@ -376,7 +387,10 @@
         postList:[],
         post:'',
         roleData:'',
-        roleType:['技师','顾问','店长']
+        roleType:['技师','顾问','店长'],
+        onTe:false,
+        teData:'',
+
       }
     },
     created() {
@@ -386,6 +400,7 @@
       },1000);
       this.getList(1);
       this.getPostList();
+      this.getTeList();
     },
     methods: {
       employeeClear() {
@@ -404,6 +419,48 @@
         this.emac = true;
         this.employeeClear();
         this.roleData = '';
+      },
+      newTe(){
+        this.onTe = true;
+      },
+      getTeList(){
+        this.$ajax({
+          method: 'GET',
+          dataType: 'JSON',
+          contentType: 'application/json;charset=UTF-8',
+          headers:{
+            'authToken': this.userInfo.authToken,
+          },
+          url:getTech()+'?userId='+this.userInfo.id+'&storedId='+this.userInfo.storeId+'&type=1',
+        }).then( (res) =>{
+          this.teData = res.data.id;
+        }).catch( (err)=>{})
+      },
+      teok(){
+        if(this.teData == ''|| this.teData ==null){
+          this.$Message.error('请选择！');
+          return;
+        }
+        this.$ajax({
+          method: 'POST',
+          dataType:'JSON',
+          contentType:'application/json;charset=UTF-8',
+          headers:{
+            'authToken': this.userInfo.authToken
+          },
+          url:saveTech(),
+          data:{
+            customerId:this.userInfo.id,
+            staffId:this.teData,
+            storeId:this.userInfo.storeId,
+            type:1
+          }
+        }).then((res)=>{
+          this.$Message.success('指定成功!');
+          this.getTeList();
+        }).catch((err)=>{
+          this.$Message.error('失败!');
+        })
       },
       rowClassName(r) {
         if(r.status == 2) {
@@ -554,6 +611,7 @@
         for( let i in this.postList){
           if(this.postList[i].id == this.employee.roleId){
             this.roleData = this.postList[i];
+            this.employee.roleName = this.postList[i].postName;
             return;
           }
         }

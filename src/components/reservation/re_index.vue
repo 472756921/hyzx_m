@@ -29,13 +29,14 @@
       <Select v-model="model4" :transfer="true" filterable style="width:200px" @on-change="getUserDiscount()">
         <Option v-for="item in u_list" :value="item.id" :key="item.id">{{ item.realName }} - {{item.phoneNumber}}</Option>
       </Select>
-      <div style="margin-top: 10px;">
+      <div v-if="model4!=''&&model4!=null" style="margin-top: 10px;">
         <span style="display: inline-block;vertical-align: top;color: orange;">用户卡项信息：</span><span v-if="userCardInfo==''||userCardInfo==null">暂无卡项</span>
         <br>
         <span style="display: inline-block;">
-          <div v-for="item in userCardInfo">卡名：{{item.cardName}}，所剩项目：美容a项目；</div>
+          <div v-for="item in userCardInfo" style="color:#999">卡名：{{item.cardName}}，所剩项目：美容a项目；</div>
         </span>
       </div>
+      <br/>
       <br/>
       <div>服务项目</div>
       <Select v-model="model2" :transfer="true" style="width:200px" multiple>

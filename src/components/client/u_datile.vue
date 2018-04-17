@@ -7,6 +7,7 @@
     <Tabs value="name1">
       <TabPane label="服务记录" name="name1"><serviceList/></TabPane>
       <TabPane label="消费记录(现金)" name="name2"><shopList/></TabPane>
+      <TabPane label="指定技师" name="name6"><technicianList/></TabPane>
       <TabPane label="问题分析" name="name3"><questionList/></TabPane>
       <TabPane label="现有卡情况" name="name4"><cardList/></TabPane>
       <TabPane label="计划图" name="name5"><uplan/></TabPane>
@@ -20,11 +21,12 @@
   import questionList from './u_questionList.vue';
   import cardList from './u_cardList.vue';
   import uplan from './u_plan.vue';
+  import technicianList from './u_technician.vue';
   import { ser_findById } from '../../interface';
 
   export default {
     name: 'u_datile',
-    components: { serviceList, shopList, questionList, cardList, uplan},
+    components: { serviceList, shopList, questionList, cardList, uplan,technicianList},
     created() {
       this.userID = this.$route.params.u_id;
       this.getList(this.userID);

@@ -46,6 +46,7 @@
     components: {imgUp},
     data(){
       return {
+        userID:'',
         userInfo: JSON.parse(sessionStorage.getItem('userInfo')),
         questionID: '',
         complete: '',

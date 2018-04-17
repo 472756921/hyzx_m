@@ -96,6 +96,19 @@ export const ser_Bill = function () {
   const API = host + URL;
   return API;
 };
+
+//用户或店长指定技师，type: 0:用户指定技师 1：店长指定技师
+export const saveTech = function () {
+  const URL = '/app/api/staffManyCustomer/save';
+  const API = host + URL;
+  return API;
+}
+//获取指定技师
+export const getTech = function () {
+const URL = '/app/api/staffManyCustomer/findStoredId';
+const API = host + URL;
+return API;
+}
 //用户现有卡情况
 export const ser_cardList = function () {
   const URL = '/app/api/customer/findOwningCardById';

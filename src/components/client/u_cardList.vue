@@ -85,6 +85,17 @@
         <Radio label="2">其他</Radio>
       </RadioGroup>
     </Modal>
+    <Modal v-model="moreCard" title="卡项详情">
+      <div class="cardm">
+        卡名称：{{this.cardM.cardName}}<br>
+        卡类型：{{this.cardM.cardTypeName}}<br>
+        开卡日期：{{this.cardM.openTime}}<br>
+        过期日期：{{this.cardM.endTime}}<br>
+        所剩项目：<span style="font-size:12px;color:#999;" v-for="item in this.cardM.project" >美容项目1次</span><br>
+        备注：{{this.cardM.bz}}<br>
+
+      </div>
+    </Modal>
   </div>
 </template>
 
@@ -106,8 +117,25 @@
           {key: 'endTime', title: '过期日期'},
           {key: 'cardTypeName', title: '卡类'},
           {key: 'status', title: '状态', render: (h, p)=>{if(p.row.cardStatus == 1){return h('span','正常')}else if(p.row.cardStatus == 0){return h('span','禁用')}else if(p.row.cardStatus == 2){return h('span','过期')}}},
-          {key: 'action', title: '操作',render: (h, params) => {
+          {key: 'action',
+            title: '操作',
+            width:'200px',
+            render: (h, params) => {
             return h('div', [
+              h('Button', {
+                props: {
+                  type: 'primary',
+                  size: 'small'
+                },
+                style: {
+                  marginRight: '5px'
+                },
+                on: {
+                  click: () => {
+                    this.cardMore(params.row);
+                  }
+                }
+              }, '详情'),
               h('Button', {
                 props: {
                   type: 'primary',
@@ -161,7 +189,9 @@
         proCard:[],
         model:'',
         model1:[],
-        beizu:''
+        beizu:'',
+        moreCard: false,
+        cardM:[],
       }
     },
     created() {
@@ -376,6 +406,10 @@
           return 'over';
         }
       },
+      cardMore(data){
+        this.moreCard = true;
+        this.cardM = data;
+      },
     },
   };
 </script>
@@ -400,5 +434,9 @@
     padding-left: 20px;
     font-size: 12px;
     color: #888;
+  }
+  .cardm{
+    font-size: 12px;
+    line-height: 25px;
   }
 </style>
