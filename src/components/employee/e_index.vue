@@ -390,7 +390,6 @@
         roleType:['技师','顾问','店长'],
         onTe:false,
         teData:'',
-
       }
     },
     created() {

@@ -55,17 +55,16 @@ import {p_list,pro_list} from '../../interface';
         emac: false,
         columns: [
           {
-            title: '项目编号',
-            key: 'code',
-          },
-          {
             title: '项目名称',
             key: 'projectName'
           },
           {
             title: '项目类型',
             key: 'type',
-
+          },
+          {
+            title: '项目单价',
+            key: 'courseMoney',
           },
           {
             title: '解决问题',

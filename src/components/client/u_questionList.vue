@@ -4,6 +4,7 @@
     <br/>
     <br/>
     <Table :columns="question" :data="questionData" style="width: 100%;margin: 0!important;"></Table>
+    <Page :current="1" :total="pages*10" @on-change="getPage" simple style="margin: 10px auto;text-align: center;"></Page>
 
     <Modal v-model="wayf" title="解决方案"  @on-ok="savePlan">
       <RadioGroup v-model="radio">
@@ -62,7 +63,7 @@
           {key: 'checkTime', title: '添加日期'},
           {key: 'description', title: '问题描述'},
           {key: 'programme', title: '解决方案', render:(h, p)=>{if(p.row.programme == 1){return h('span','基础方案')}else if(p.row.programme == 2 ){return h('span','推荐方案')} else if(p.row.programme == 3 ) {return h('span','最优方案')}else if(p.row.programme == 0 ) {return h('span','未指定')}}},
-          {key: 'proStatus', title: '状态', render:(h, p)=>{if(p.row.proStatus == 2){return h('span','已解决')}else if(p.row.proStatus == 1 ){return h('span','正在解决')}}},
+          {key: 'proStatus', title: '状态', render:(h, p)=>{if(p.row.proStatus == 2){return h('span',{style:{color:'green'}},'已解决')}else if(p.row.proStatus == 1 ){return h('span','正在解决')}}},
           {key: 'action', title: '操作', render: (h, params) => {
             return h('div', [
               h('Button', {
@@ -106,7 +107,8 @@
         pList:[],
         solutionList:[],
         description:[],
-        userCardInfo:''
+        userCardInfo:'',
+        pages:'',
       }
     },
     watch: {
@@ -122,7 +124,8 @@
     },
     created() {
       this.userID = this.$route.params.u_id;
-      this.getList();
+      this.getProList();
+      this.getList(1);
       this.getSolution();
     },
     methods: {
@@ -140,7 +143,7 @@
         }).catch((error) => {
         });
       },
-      getList() {
+      getProList(){
         this.$ajax({
           method: 'GET',
           dataType: 'JSON',
@@ -154,6 +157,8 @@
           this.questionList = res.data;
         }).catch((error) => {
         });
+      },
+      getList(page) {
         this.$ajax({
           method: 'GET',
           dataType: 'JSON',
@@ -161,11 +166,15 @@
           headers: {
             "authToken": sessionStorage.getItem('authToken')
           },
-          url: ser_UserProblem()+'?id=' + this.userID,
+          url: ser_UserProblem()+'?id=' + this.userID+'&page='+page+'&pageSize=10',
         }).then((res) => {
           this.questionData = res.data.results;
+          this.pages = res.data.pages;
         }).catch((error) => {
         });
+      },
+      getPage(current){
+        this.getList(current);
       },
       getSolution(){
         this.$ajax({
@@ -192,7 +201,7 @@
           data: {customerId: this.userID, proids:this.social },
         }).then((res) => {
           this.questionData = res.data.results;
-          this.getList();
+          this.getList(1);
         }).catch((error) => {
         });
       },
@@ -233,7 +242,7 @@
           }
         }).then((res) => {
           this.$Message.success('方案保存成功！');
-          this.getList();
+          this.getList(1);
         }).catch((error) => {
         });
       },
@@ -366,5 +375,8 @@
   }
   .pointer{
     cursor: pointer;
+  }
+  .row{
+    background:#ABCDEF;
   }
 </style>

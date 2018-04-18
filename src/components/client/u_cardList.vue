@@ -4,6 +4,7 @@
     <br/>
     <br/>
     <Table :columns="cards" :data="cardsData" :row-class-name="rowClassName"></Table>
+    <Page :current="1" :total="pages*10" @on-change="getPage" simple style="margin: 10px auto;text-align: center;"></Page>
     <Modal v-model="newCardF" title="新增卡" @on-ok="addok" :mask-closable="false">
       <div>请选择新增类型</div>
       <RadioGroup v-model="radio" @on-change="getCardList(radio)">
@@ -192,11 +193,12 @@
         beizu:'',
         moreCard: false,
         cardM:[],
+        pages:''
       }
     },
     created() {
       this.userID = this.$route.params.u_id;
-      this.getList(1,  this.userID);
+      this.getList(1,this.userID);
       this.getCards();
 
     },
@@ -209,12 +211,16 @@
           headers: {
             "authToken": sessionStorage.getItem('authToken')
           },
-          url: ser_cardList() + '?id=' + uid +"&page="+page+"&pageSize=50",
+          url: ser_cardList() + '?id=' + uid +"&page="+page+"&pageSize=10",
         }).then((res) => {
           this.cardsData = res.data.results;
+          this.pages = res.data.pages;
         }).catch((error) => {
         });
       },
+      getPage(current){
+        this.getList(current,this.userID);
+        },
       getCards(){
         //会员卡
         this.$ajax({
