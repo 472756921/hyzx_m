@@ -67,7 +67,7 @@
 
 <script type="text/ecmascript-6">
   import scheduler from '../../../static/scheduler.min';
-  import {re_Alllist, re_save, re_toOrder,getRule,getUserCard} from '../../interface';
+  import {re_Alllist, re_save, re_toOrder,getRule,getUserCard,getSortList} from '../../interface';
 
   export default {
     name: 're_index',
@@ -293,34 +293,25 @@
         }).then( (res) =>{
           this.userCardInfo = res.data.results;
         }).catch( (err)=>{ })
-        this.ce_list=this.getCustomerOrder(this.model4);
-        for(let m in this.e_list){
-          this.ce_list.push(this.e_list[m]);
-        }
-        this.ce_list = this.uniqueArray(this.ce_list,'id');
+        this.ce_list = [];
+        this.getCustomerOrder(this.model4);
 
       },
       //获取4条规则下的技师
       getCustomerOrder(id){
-        let arr=new Array();
-        for(let m in this.rule){
-          switch(this.rule[m])
-          {
-            case '1' :
-              arr.push(this.test1)
-              break;
-            case '2' :
-              arr.push(this.test2)
-              break;
-            case '3':
-              arr.push(this.test3)
-              break;
-            case '4':
-              arr.push(this.test4)
-              break;
-          }
-        }
-        return arr;
+        this.$ajax({
+          method:'GET',
+          dataType: 'JSON',
+          contentType:'application/json;charset=UTF-8',
+          headers:{
+            "authToken": sessionStorage.getItem('authToken'),
+          },
+          url:getSortList()+'?storeId='+this.storeId+'&id='+id,
+        }).then((res)=>{
+          this.ce_list = res.data.map((item)=>{return item});
+          this.ce_list = this.uniqueArray(this.ce_list,'id');
+
+        }).catch( (err)=>{})
       },
       //去重
       uniqueArray(array,key){

@@ -64,6 +64,12 @@ export const e_postList = function(){
   const URL = '/app/api/post/findPostList';
   const API = host + URL;
   return API;
+};
+//获取规则下排序技师
+export const getSortList = function(){
+  const URL = '/app/api/user/findStaff';
+  const API = host + URL;
+  return API;
 }
 //----------------------------------------------------------------------------------------
 //顾客列表
@@ -103,7 +109,7 @@ export const saveTech = function () {
   const API = host + URL;
   return API;
 }
-//获取指定技师
+//获取用户或店长指定技师
 export const getTech = function () {
 const URL = '/app/api/staffManyCustomer/findStoredId';
 const API = host + URL;

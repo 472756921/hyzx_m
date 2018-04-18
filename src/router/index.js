@@ -24,6 +24,7 @@ import b_index from '@/components/basicInformation/b_index'
 
 import ro_index from '@/components/room/ro_index'
 
+
 Vue.use(Router)
 
 const router =  new Router({

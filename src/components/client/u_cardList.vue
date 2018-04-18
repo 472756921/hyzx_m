@@ -220,7 +220,7 @@
       },
       getPage(current){
         this.getList(current,this.userID);
-        },
+      },
       getCards(){
         //会员卡
         this.$ajax({
