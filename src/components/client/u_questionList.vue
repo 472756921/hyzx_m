@@ -106,7 +106,7 @@
         selectP:[],
         pList:[],
         solutionList:[],
-        description:[],
+        proids:[],
         userCardInfo:'',
         pages:'',
       }
@@ -114,11 +114,11 @@
     watch: {
       radio(n, o){
         if(this.radio == '1'){
-          this.pList = this.getBasic(this.description);
+          this.pList = this.getBasic(this.proids);
         }else if( this.radio == '2'){
-          this.pList = this.getBest(this.description);
+          this.pList = this.getBest(this.proids);
         }else if(this.radio == '3'){
-          this.pList = this.getRecommend(this.description);
+          this.pList = this.getRecommend(this.proids);
         }
       },
     },
@@ -127,6 +127,7 @@
       this.getProList();
       this.getList(1);
       this.getSolution();
+      this.findMyCard();
     },
     methods: {
       getPrData (time) {
@@ -216,14 +217,14 @@
         if(row.programme == 0) {
           this.waysF = false;
           this.radio = '1';
-          this.pList = this.getBasic(row.description);
+          this.pList = this.getBasic(row.proids);
         } else {
           this.radio = row.programme;
           this.waysF = true;
           this.selectP = row.proids;
         }
         this.wayf = true;
-        this.description = row.description;
+        this.proids = row.proids;
 
       },
       savePlan() {
@@ -248,7 +249,7 @@
       },
       //获取基础方案
       getBasic(data){
-        let arr = data.split(',');
+        let arr = data;
         let list = new Array();
         let res1 =[];
         let res2 = [];
@@ -256,34 +257,31 @@
         let basicid = [];
         for(let i in arr){
           for(let j in this.solutionList){
-            if(arr[i] == this.solutionList[j].problemName){
+            if(arr[i] == this.solutionList[j].problemId){
               basicname= this.solutionList[j].basicProgramme.split(',');
               basicid = this.solutionList[j].basicProgrammeIds.split(',');
               for(let m in basicid){
-                if(!res1.includes(basicid[m])){
                   res1.push(basicid[m])
-                }
               }
               for(let n in basicname){
-                if(!res2.includes(basicname[n])){
                   res2.push(basicname[n])
-                }
               }
             }
           }
         }
-        for(let m in basicid){
+        for(let m in res1){
           list.push({
-            id: basicid[m],
-            name: basicname[m]
+            id: res1[m],
+            name: res2[m]
           })
         }
+        list = this.uniqueArray(list ,'id');
         return list;
 
       },
       //获取最优方案
       getBest(data){
-        let arr = data.split(',');
+        let arr = data;
         let list = new Array();
         let res1 =[];
         let res2 = [];
@@ -291,28 +289,25 @@
         let bestid = [];
         for(let i in arr){
           for(let j in this.solutionList){
-            if(arr[i] == this.solutionList[j].problemName){
+            if(arr[i] == this.solutionList[j].problemId){
               bestname= this.solutionList[j].optimalScheme.split(',');
               bestid = this.solutionList[j].optimalSchemeIds.split(',');
               for(let m in bestid){
-                if(!res1.includes(bestid[m])){
                   res1.push(bestid[m])
-                }
               }
               for(let n in bestname){
-                if(!res2.includes(bestname[n])){
                   res2.push(bestname[n])
-                }
               }
             }
           }
         }
-        for(let m in bestid){
+        for(let m in res1){
           list.push({
-            id: bestid[m],
-            name: bestname[m]
+            id: res1[m],
+            name: res2[m]
           })
         }
+        list = this.uniqueArray(list ,'id');
         return list;
       },
       //获取推荐方案
@@ -320,22 +315,11 @@
         let arr = new Array();
         let list = new Array();
         arr = this.getBest(data);
-        this.$ajax({
-          method: 'GET',
-          dataType: 'JSON',
-          contentType:'application/json;charset=UTF-8',
-          headers:{
-            "authToken":this.userInfo.authToken,
-          },
-          url:getUserCard()+'?id='+this.userID
-        }).then( (res) =>{
-          this.userCardInfo = res.data.results;
-        }).catch( (err)=>{ })
         for(let i in this.userCardInfo){
-          for( let j in this.userCardInfo.project){
+          for( let j in this.userCardInfo[i].project){
             arr.push({
-              id: this.userCardInfo.project[i][j].id,
-              name: this.userCardInfo.project[i][j].name
+              id: this.userCardInfo[i].project[j].projectId,
+              name: this.userCardInfo[i].project[j].projectName,
             })
           }
 
@@ -361,6 +345,19 @@
         }
         return result;
       },
+      findMyCard(){
+        this.$ajax({
+          method: 'GET',
+          dataType: 'JSON',
+          contentType:'application/json;charset=UTF-8',
+          headers:{
+            "authToken":this.userInfo.authToken,
+          },
+          url:getUserCard()+'?id='+this.userID
+        }).then( (res) =>{
+          this.userCardInfo = res.data.results;
+        }).catch( (err)=>{ })
+      }
     },
   };
 </script>

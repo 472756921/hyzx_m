@@ -92,7 +92,7 @@
         卡类型：{{this.cardM.cardTypeName}}<br>
         开卡日期：{{this.cardM.openTime}}<br>
         过期日期：{{this.cardM.endTime}}<br>
-        所剩项目：<span style="font-size:12px;color:#999;" v-for="item in this.cardM.project" >美容项目1次</span><br>
+        所剩项目：<span style="font-size:12px;color:#999;" v-for="item in this.cardM.project" >{{item.projectName}}-{{item.remaining}}次&nbsp;&nbsp;&nbsp;&nbsp;</span><br>
         备注：{{this.cardM.bz}}<br>
 
       </div>

@@ -93,9 +93,9 @@
         <Option v-for="item in u_list"  :value="item.id" :key="item.id">{{ item.realName }} - {{item.phoneNumber}}</Option>
       </Select>
       <div v-show="userDiscountShow" style="margin-top: 10px;">
-        <span style="display: inline-block;vertical-align: top;color: orange;">用户卡项信息：</span><span v-if="userCardInfo==''||userCardInfo==null">暂无卡项</span>
+        <span style="display: inline-block;vertical-align: top;color: orange;">用户卡项信息：</span><span v-if="userCardInfo==''||userCardInfo==null">暂无卡项 </span><br>
         <span style="display: inline-block;">
-          <div v-for="item in userCardInfo">卡名：{{item.cardName}}，所剩项目：美容a项目；</div>
+          <div v-for="item in userCardInfo" style="color:#999;line-height:20px;">{{item.cardName}}卡&nbsp;&nbsp;/&nbsp;&nbsp;{{item.cardTypeName}}&nbsp;&nbsp;/&nbsp;&nbsp;过期：{{item.endTime}}&nbsp;&nbsp;/&nbsp;&nbsp;所剩项目： <span style="font-size:12px;color:#999;" v-for="items in item.project" >{{items.projectName}}-{{items.remaining}}次&nbsp;&nbsp;&nbsp;&nbsp;</span></div>
         </span>
       </div>
       <br>
@@ -366,7 +366,7 @@
           headers:{
             "authToken": this.userInfo.authToken,
           },
-          url:getSortList()+'?storeId='+this.userInfo.storeId+'&id='+id,
+          url:getSortList()+'?storeId='+this.userInfo.storeId+'&id='+id+'&staffId='+this.userInfo.id,
         }).then((res)=>{
           this.ce_list = res.data.map((item)=>{return item});
           this.ce_list = this.uniqueArray(this.ce_list,'id');

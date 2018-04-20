@@ -16,7 +16,7 @@
 
     <div v-if="!over" style="font-size: 20px;text-align: center">加载中，请稍后<span class="loding">...</span></div>
 
-    <Modal v-model="model1" :title="text" @on-ok="ok">
+    <Modal v-model="model1" :title="text" @on-ok="ok" :mask-closable="false">
       <div>开始时间</div>
       <DatePicker type="datetime" v-model="newDate" placeholder="选择预约日期和时间" :options="options" style="width: 200px"></DatePicker>
       <br/>
@@ -30,10 +30,9 @@
         <Option v-for="item in u_list" :value="item.id" :key="item.id">{{ item.realName }} - {{item.phoneNumber}}</Option>
       </Select>
       <div v-if="model4!=''&&model4!=null" style="margin-top: 10px;">
-        <span style="display: inline-block;vertical-align: top;color: orange;">用户卡项信息：</span><span v-if="userCardInfo==''||userCardInfo==null">暂无卡项</span>
-        <br>
+        <span style="display: inline-block;vertical-align: top;color: orange;">用户卡项信息：</span><span v-if="userCardInfo==''||userCardInfo==null">暂无卡项 </span><br>
         <span style="display: inline-block;">
-          <div v-for="item in userCardInfo" style="color:#999">卡名：{{item.cardName}}，所剩项目：美容a项目；</div>
+         <div v-for="item in userCardInfo" style="color:#999;line-height:20px;">{{item.cardName}}卡&nbsp;&nbsp;/&nbsp;&nbsp;{{item.cardTypeName}}&nbsp;&nbsp;/&nbsp;&nbsp;过期：{{item.endTime}}&nbsp;&nbsp;/&nbsp;&nbsp;所剩项目： <span style="font-size:12px;color:#999;" v-for="items in item.project" >{{items.projectName}}-{{items.remaining}}次&nbsp;&nbsp;&nbsp;&nbsp;</span></div>
         </span>
       </div>
       <br/>
@@ -55,7 +54,7 @@
       <br/>
       <div>服务床位</div>
       <Select v-model="model3" :transfer="true" style="width:200px;">
-        <Option v-for="(item, i) in r_list" :value="item.id" :key="i" :disabled="item.roomStatus==1? true: false">{{ item.roomNumber}} - {{item.roomName }}</Option>
+        <Option v-for="(item, i) in r_list" :value="item.id" :key="i" :disabled="item.roomStatus==1? true: false">{{ item.roomNumber}} - {{item.roomName }} <span style="float:right" v-if="item.roomStatus==1">已使用</span> </Option>
       </Select>
       <br/>
       <br/>
@@ -100,11 +99,7 @@
         events: [],
         ce_list:[],
         rule:[],
-        test1:{id:10,realName:'test1'},
-        test2:{id:11,realName:'test2'},
-        test3:{id:12,realName:'test3'},
-        test4:{id:13,realName:'test4'},
-        storeId: JSON.parse(sessionStorage.getItem('userInfo')).storeId,
+        userSession: JSON.parse(sessionStorage.getItem('userInfo')),
         userCardInfo:''
 
       }
@@ -121,7 +116,6 @@
       this.GetData('r_Alllist',this, this.setData);
       this.GetData('p_Alllist',this, this.setData);
       this.getRule();
-
     },
     methods: {
       createdOrder() {
@@ -131,9 +125,9 @@
           headers: {
             "authToken": sessionStorage.getItem('authToken')
           },
-          data: {id : this.orderID},
+          // data: {id : this.orderID},
           contentType: 'application/json;charset=UTF-8',
-          url: re_toOrder(),
+          url: re_toOrder()+'?id='+this.orderID,
         }).then((res) => {
           this.$Message.success('操作成功');
         }).catch((error) => {
@@ -145,9 +139,9 @@
             this.events = [
               ...this.events,
               {
-                newDate: ite.scheduleDate,
-                newDate2: ite.scheduleEndDate,
-                model2: [ite.projectId],
+                newDate: new Date(ite.scheduleDate).Format('yyyy-MM-dd hh:mm'),
+                newDate2: new Date(ite.scheduleEndDate).Format('yyyy-MM-dd hh:mm') ,
+                model2: this.dealProject(ite.project),
                 model5: ite.staffId,
                 model3:ite.roomId,
                 model4: ite.customerId,
@@ -155,12 +149,13 @@
                 resourceId: ite.staffId,
                 start: ite.scheduleDate,
                 end: ite.scheduleEndDate,
-                title: ite.customerName+'/'+ite.roomName+ '/' + ite.projectName,
+                title: ite.customerName+'/'+ite.roomName+ '/' +this.dealProject2(ite.project),
                 color: '#38925E',
                 textColor: '#eee',
               }];
           })
         })
+
         setTimeout(()=>{this.createdTable();}, 2000)
       },
       createdTable() {
@@ -196,9 +191,9 @@
             this.transformF = true;
             this.model1 = true;
             this.text = '修改预约';
-            this.newDate = calEvent.newDate;
-            this.newDate2 = calEvent.newDate2;
-            this.model2 = [calEvent.model2];
+            this.newDate = new Date(calEvent.newDate).Format('yyyy-MM-dd hh:mm:ss');
+            this.newDate2 =new Date(calEvent.newDate2).Format('yyyy-MM-dd hh:mm:ss') ;
+            this.model2 = calEvent.model2;
             this.model3 = calEvent.model3;
             this.model4 = calEvent.model4;
             this.model5 = calEvent.model5;
@@ -265,6 +260,52 @@
         this.transformF = false;
         this.user = '';
       },
+      ok() {
+        if( this.newDate == '' ||  this.newDate2 == '' || this.model2 == '' || this.model3 == '' || this.model4 == '' || this.model5 == '') {
+          this.$Message.error('请完整填写预约信息');
+          return false
+        }
+        this.newDate = new Date(this.newDate).Format('yyyy-MM-dd hh:mm')
+        this.newDate2 = new Date(this.newDate2).Format('yyyy-MM-dd hh:mm')
+        if(this.text == '修改预约'){
+          return false;
+        }
+
+
+        this.$ajax({
+          method: 'POST',
+          dataType: 'JSON',
+          headers: {
+            "authToken": sessionStorage.getItem('authToken')
+          },
+          data: {
+            scheduleDate: this.newDate,
+            scheduleEndDate: this.newDate2,
+            roomId: this.model3,
+            customerId: this.model4,
+            staffId: this.model5,
+            projectId: this.model2.toString(),
+          },
+          contentType: 'application/json;charset=UTF-8',
+          url: re_save(),
+        }).then((res) => {
+          this.$Message.success('操作成功');
+          location.reload();
+        }).catch((error) => {
+        });
+
+        const events = {
+          id: '23',
+          resourceId: this.model5,
+          start: this.newDate,
+          end: this.newDate2,
+          title: this.p_list.find( (i) => {
+            if (i.id == this.model2) {return i}}).projectName + '/' +this.r_list.find( (i) => {if (i.id == this.model3) {return i}}).roomName + '/' +this.u_list.find( (i) => {if (i.id == this.model4) {return i}}).realName + "-" +this.u_list.find( (i) => {if (i.id == this.model4) {return i}}).phoneNumber,
+          color: '#38925E',
+          textColor: '#eee',
+        };
+        $('#calendar').fullCalendar( 'renderEvent', events, true);
+      },
       //获取该门店技师排序规则
       getRule(){
         this.$ajax({
@@ -274,7 +315,7 @@
           headers:{
             "authToken": sessionStorage.getItem('authToken')
           },
-          url:getRule()+'?id='+this.storeId
+          url:getRule()+'?id='+this.userSession.storeId
         }).then( (res) =>{
           this.rule= res.data.advisorDesignation.split(',');
         }).catch( (err)=>{})
@@ -306,7 +347,7 @@
           headers:{
             "authToken": sessionStorage.getItem('authToken'),
           },
-          url:getSortList()+'?storeId='+this.storeId+'&id='+id,
+          url:getSortList()+'?storeId='+this.userSession.storeId+'&id='+id+'&staffId='+this.userSession.id,
         }).then((res)=>{
           this.ce_list = res.data.map((item)=>{return item});
           this.ce_list = this.uniqueArray(this.ce_list,'id');
@@ -331,49 +372,20 @@
         }
         return result;
       },
-      ok() {
-        if( this.newDate == '' ||  this.newDate2 == '' || this.model2 == '' || this.model3 == '' || this.model4 == '' || this.model5 == '') {
-          this.$Message.error('请完整填写预约信息');
-          return false
+      dealProject(project){
+        let list = [];
+        for(let i in project){
+          list.push(project[i].id)
         }
-        this.newDate = new Date(this.newDate).Format('yyyy-MM-dd hh:mm')
-        this.newDate2 = new Date(this.newDate2).Format('yyyy-MM-dd hh:mm')
-        if(this.text == '修改预约'){
-          return false;
-        }
-        this.$ajax({
-          method: 'POST',
-          dataType: 'JSON',
-          headers: {
-            "authToken": sessionStorage.getItem('authToken')
-          },
-          data: {
-            scheduleDate: this.newDate,
-            scheduleEndDate: this.newDate2,
-            roomId: this.model3,
-            customerId: this.model4,
-            staffId: this.model5,
-            projectId: this.model2,
-          },
-          contentType: 'application/json;charset=UTF-8',
-          url: re_save(),
-        }).then((res) => {
-          this.$Message.success('操作成功');
-        }).catch((error) => {
-        });
-
-        const events = {
-            id: '23',
-            resourceId: this.model5,
-            start: this.newDate,
-            end: this.newDate2,
-            title: this.p_list.find( (i) => {
-              if (i.id == this.model2) {return i}}).projectName + '/' +this.r_list.find( (i) => {if (i.id == this.model3) {return i}}).roomName + '/' +this.u_list.find( (i) => {if (i.id == this.model4) {return i}}).realName + "-" +this.u_list.find( (i) => {if (i.id == this.model4) {return i}}).phoneNumber,
-            color: '#38925E',
-            textColor: '#eee',
-          };
-        $('#calendar').fullCalendar( 'renderEvent', events, true);
+        return list;
       },
+      dealProject2(project){
+        let list = [];
+        for(let i in project){
+          list.push(project[i].name)
+        }
+        return list;
+      }
     }
   };
 </script>
