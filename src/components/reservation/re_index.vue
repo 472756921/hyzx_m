@@ -271,7 +271,6 @@
           return false;
         }
 
-
         this.$ajax({
           method: 'POST',
           dataType: 'JSON',

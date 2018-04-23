@@ -53,17 +53,25 @@
               </Col>
             </Row>
           </div>
-          <div v-if="item.project.length!=0">
+          <div v-if="item.project!=null">
             <div class="orderLititle">非卡扣项目：</div>
-            <div class="orderLiCon" v-for="(it,i) in item.project"  style="background: #f7f7f7;padding-left: 10px">
-              {{ it.projectName }} &nbsp;<span class="price">￥{{ it.money }}</span>
+            <div class="orderLiCon"  style="background: #f7f7f7;padding-left: 10px">
+              <Row>
+                <Col span="12" v-for="(it,i) in item.project" :key="it.id">{{ it.projectName }} &nbsp;<span class="price">￥{{ it.money }}</span></Col>
+              </Row>
+
+
             </div>
           </div>
-          <div v-if="item.cardProject.length!=0"><span class="orderLititle">卡扣项目：</span>
-            <div class="orderLiCon" v-for="(it,i) in item.cardProject"  style="background: #f7f7f7;padding: 10px">
-              {{ it.projectName }} &nbsp;<span class="price">￥{{ it.money }}</span>
+
+          <div v-if="item.cardProject!=null"><span class="orderLititle">卡扣项目：</span>
+            <div class="orderLiCon" style="background: #f7f7f7;padding-left: 10px">
+              <Row>
+                <Col span="12" v-for="(it,i) in item.cardProject" :key="it.id">{{ it.projectName }} &nbsp;<span class="price">￥{{ it.money }}</span></Col>
+              </Row>
             </div>
           </div>
+
           <div style="font-size: 16px;margin: 10px auto;" >储值卡付款合计：<span class="price" style="font-size: 16px">￥{{ item.cashAmount }}</span></div>
           <div>结算方式：</div>
           <RadioGroup v-model="ordert[i]">
@@ -309,8 +317,11 @@
        this.service = true;
        this.orderINfo = JSON.parse(JSON.stringify(data));
         let project =[];
-        for (let it in this.orderINfo.project) {
+        for (let it in data.project) {
          project.push(data.project[it].projectId);
+        }
+        for(let it in data.cardProject){
+          project.push(data.cardProject[it].projectId);
         }
         this.orderINfo.project =[];
         this.orderINfo.project = project;
