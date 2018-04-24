@@ -149,7 +149,7 @@
                 resourceId: ite.staffId,
                 start: ite.scheduleDate,
                 end: ite.scheduleEndDate,
-                title: ite.customerName+'/'+ite.roomName+ '/' +this.dealProject2(ite.project),
+                title: ite.customerName+' / 房间：'+ite.roomName+ ' / 项目：' +this.dealProject2(ite.project),
                 color: '#38925E',
                 textColor: '#eee',
               }];
@@ -180,7 +180,7 @@
           header: {
             left: 'prev,next today',
             center: 'title',
-            right: 'agendaDay'
+            right: ''
           },
           resources: this.e_listTable,
           events: this.events,
@@ -222,7 +222,11 @@
           this.p_list = data;
         }
       },
-      seacher() {},
+      seacher() {
+        if(this.date === '') {
+          return false;
+        }
+      },
       getList(date) {
         this.$ajax({
           method: 'GET',

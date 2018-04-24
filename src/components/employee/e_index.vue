@@ -540,7 +540,7 @@
       },
       serc() {    //搜索员工
         if (this.name == '') {
-          this.$Message.warning('请输入员工名字');
+          this.getList(1);
           return
         }
         this.$ajax({

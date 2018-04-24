@@ -195,7 +195,7 @@
                       this.edit(params.index)
                     }
                   }
-                }, '修改电话'),
+                }, '修改'),
               ]);
             }
           }
@@ -334,7 +334,8 @@
       },
       serc() {    //搜索
         if (this.name == '') {
-          this.$Message.warning('请输入用户名字');
+          // this.$Message.warning('请输入用户名字');
+          this.getList(1);
           return
         }
         this.$ajax({
