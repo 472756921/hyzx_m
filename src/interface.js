@@ -353,12 +353,6 @@ export const re_toOrder = function () {
   return API;
 };
 // -----------------------------------------------------------------------------
-//日报表
-export const re_day = function () {
-  const URL = '/app/api/report/findDayList';
-  const API = host + URL;
-  return API;
-};
 //月报表
 export const re_mouth = function () {
   const URL = '/app/api/report/findMouthList';
@@ -396,5 +390,10 @@ export const pro_Card = function(){
   const API = host + URL;
   return API;
 }
-
-
+//----------------------------------------
+// 详细日报
+export const dailyDetails = function(){
+  const URL = '/app/api/report/findDailyDetails';
+  const API = host + URL;
+  return API;
+}

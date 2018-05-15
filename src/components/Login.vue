@@ -1,7 +1,7 @@
 <template>
   <div class="content" @keyup.enter="login()">
     <div class="box">
-      <h1>华扬咨询后台系统</h1>
+      <h1>华扬咨询门店信息系统</h1>
       <div class="box2">
         <input type="text" placeholder="账号" v-model="account"/>
         <input type="password" placeholder="密码" v-model="pwd"/><br/><br/>
@@ -54,23 +54,30 @@
 <style scoped>
   .content{
     height:100%;
-    background: url("../assets/bk.png");
+    background: -webkit-linear-gradient(left top, #FAD7A1 , #66368C); /* Safari 5.1 - 6.0 */
+    background: -o-linear-gradient(left top, #FAD7A1, #66368C); /* Opera 11.1 - 12.0 */
+    background: -moz-linear-gradient(left top, #FAD7A1, #66368C); /* Firefox 3.6 - 15 */
+    background: linear-gradient(to left top, #FAD7A1 , #66368C); /* 标准的语法 */
   }
   .box{
-    padding: 60px 10px;
     color: #fff;
     width: 500px;
-    margin: 0 auto;
+    margin: auto;
+    height: 500px;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
     z-index: 2;
-    position: relative;
+    position: absolute;
   }
   h1{
     text-align: center;
   }
   .box2{
     margin: 20px auto;
-    padding: 50px 30px;
-    background-color:rgba(0,0,0,0.06);
+    padding: 50px 40px;
+    background-color:rgba(0,0,0,0.1);
     border-radius: 10px;
     overflow: auto;
   }

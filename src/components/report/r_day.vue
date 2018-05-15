@@ -5,28 +5,12 @@
     <br/>
     <br/>
     <h3>报表详情</h3>
-    <Checkbox-group v-model="tableColumnsChecked" @on-change="changeTableColumns">
-      <Checkbox label="u_name">顾客姓名</Checkbox>
-      <Checkbox label="service">服务项目</Checkbox>
-      <Checkbox label="cath">现金业绩</Checkbox>
-      <Checkbox label="h_project">高端项目</Checkbox>
-      <Checkbox label="consultant">顾问</Checkbox>
-      <Checkbox label="face">面部指定</Checkbox>
-      <Checkbox label="face2">面部非指定</Checkbox>
-      <Checkbox label="body">身体指定</Checkbox>
-      <Checkbox label="body2">身体非指定</Checkbox>
-      <Checkbox label="porject">产品现金</Checkbox>
-      <Checkbox label="porject2">产品超折</Checkbox>
-      <Checkbox label="porject3">产品卡扣</Checkbox>
-      <Checkbox label="card_porject">卡扣疗程-名称</Checkbox>
-      <Checkbox label="card_porject2">卡扣疗程-金额</Checkbox>
-    </Checkbox-group>
     <Table :data="tableData2" :columns="tableColumns2" border></Table>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
-  import { re_day } from '../../interface';
+  import { dailyDetails } from '../../interface';
 
   export default {
     name: 'r_day',
@@ -35,27 +19,27 @@
         date: '',
         tableData2: [],
         tableColumns2: [],
-        tableColumnsChecked: ['u_name', 'service', 'cath', 'h_project', 'consultant', 'face', 'face2', 'body', 'body2', 'porject', 'porject2', 'porject3', 'card_porject', 'card_porject2']
+        tableColumnsChecked: ['userName', 'serviceItems', 'cashPerformance', 'h_project', 'consultant', 'fPAppoint', 'fPNSpecifiedt', 'pEAppoint', 'pENSpecifiedt', 'productCash', 'porject2', 'productSnap', 'claspCourseName', 'claspCourseMoney']
       }
     },
     methods: {
       getTable2Columns () {
         const table2ColumnList = {
-          e_name: {
+          name: {
             title: '员工姓名',
-            key: 'e_name',
+            key: 'name',
           },
-          u_name: {
+          userName: {
             title: '顾客姓名',
-            key: 'u_name',
+            key: 'userName',
           },
-          service: {
+          serviceItems: {
             title: '服务项目',
-            key: 'service',
+            key: 'serviceItems',
           },
-          cath: {
+          cashPerformance: {
             title: '现金业绩',
-            key: 'cath',
+            key: 'cashPerformance',
           },
           h_project: {
             title: '高端项目',
@@ -65,53 +49,67 @@
             title: '顾问',
             key: 'consultant',
           },
-          face: {
+          fPAppoint: {
             title: '面部指定',
-            key: 'face',
+            key: 'fPAppoint',
           },
-          face2: {
+          fPNSpecifiedt: {
             title: '面部非指定',
-            key: 'face2',
+            key: 'fPNSpecifiedt',
           },
-          body: {
+          pEAppoint: {
             title: '身体指定',
-            key: 'body',
+            key: 'pEAppoint',
           },
-          body2: {
+          pENSpecifiedt: {
             title: '身体非指定',
-            key: 'body2',
+            key: 'pENSpecifiedt',
           },
-          porject: {
+          productCash: {
             title: '产品现金',
-            key: 'porject',
+            key: 'productCash',
           },
           porject2: {
             title: '产品超折',
             key: 'porject2',
           },
-          porject3: {
+          productSnap: {
             title: '产品卡扣',
-            key: 'porject3',
+            key: 'productSnap',
           },
-          card_porject: {
+          claspCourseName: {
             title: '卡扣疗程-名称',
-            key: 'card_porject',
+            key: 'claspCourseName',
           },
-          card_porject2: {
+          claspCourseMoney: {
             title: '卡扣疗程-金额',
-            key: 'card_porject2',
+            key: 'claspCourseMoney',
           },
         };
-        let data = [table2ColumnList.e_name];
+        let data = [table2ColumnList.name];
         this.tableColumnsChecked.forEach(col => data.push(table2ColumnList[col]));
+        console.log(data);
         return data;
       },
-      changeTableColumns () {
-        this.tableColumns2 = this.getTable2Columns();
+      getData () {
+        this.$ajax({
+          method: 'GET',
+          dataType: 'JSON',
+          contentType: 'application/json;charset=UTF-8',
+          headers: {
+            "authToken": sessionStorage.getItem('authToken')
+          },
+          url: dailyDetails()
+        }).then((res) => {
+          this.tableColumnsChecked = res.data.title;
+          this.tableColumns2 = this.getTable2Columns();
+          this.tableData2 = res.data.data;
+        }).catch((error) => {
+        });
       },
     },
     mounted () {
-      this.changeTableColumns();
+      this.getData();
     }
   };
 </script>
