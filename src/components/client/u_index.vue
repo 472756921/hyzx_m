@@ -2,7 +2,7 @@
   <div>
     <Row :gutter="24" class="option">
       <Col span="4">
-        <Input v-model="name" placeholder="用户姓名" style="margin-top: -1px">
+        <Input v-model="name" placeholder="用户姓名/电话号码" style="margin-top: -1px">
           <span slot="append" class="serc" @click="serc">查找</span>
         </Input>
       </Col>
@@ -15,11 +15,13 @@
     <Modal  v-model="emac" :title="emclass" @on-ok="saveUser"  >
       <h3>基础信息</h3>
       <br/>
-      <Input v-model="user.realName" :disabled="emclass=='修改用户'?true:false" ><span slot="prepend">用户姓名</span></Input>
+      <Input v-model="user.realName" :disabled="emclass=='修改用户'?true:false" ><span slot="prepend">用户姓名*</span></Input>
       <br/>
-      <Input v-model="user.idCardNumber" :disabled="emclass=='修改用户'?true:false"><span slot="prepend">身份证号</span></Input>
+      <Input v-model="user.idCardNumber" :disabled="emclass=='修改用户'?true:false"><span slot="prepend">身份证号*</span></Input>
       <br/>
       <Input v-model="user.phoneNumber"><span slot="prepend">电话号码</span></Input>
+      <br/>
+      <Input v-model="user.bzText"><span slot="prepend">备注信息</span></Input>
       <br/>
       <span>推荐人：</span>
       <Select v-model="user.introducerId" filterable style="width:200px" :disabled="emclass=='修改用户'?true:false">
@@ -109,6 +111,7 @@
         openCard: false,
         service: false,
         user: {
+          bzText:'',
           id: '',
           realName: '',
           idCardNumber: '',
@@ -283,7 +286,7 @@
         });
       },
       saveUser() {
-        if(this.user.realName == '' || this.user.idCardNumber == '' || this.user.phoneNumber == '' || this.user.introducer == '') {
+        if(this.user.realName == '' || this.user.phoneNumber == '') {
           this.$Message.warning('请填写用户信息');
           return ;
         }

@@ -103,7 +103,7 @@
         orderF: false,
         columns: [
           {
-            title: '投诉顾客',
+            title: '投诉人',
             key: 'customerName',
           },
           {

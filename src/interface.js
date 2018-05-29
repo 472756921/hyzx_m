@@ -352,13 +352,6 @@ export const re_toOrder = function () {
   const API = host + URL;
   return API;
 };
-// -----------------------------------------------------------------------------
-//月报表
-export const re_mouth = function () {
-  const URL = '/app/api/report/findMouthList';
-  const API = host + URL;
-  return API;
-};
 //-------------------------------------------------------------------------------
 //会员卡列表
 export const mer_Card = function(){
@@ -394,6 +387,12 @@ export const pro_Card = function(){
 // 详细日报
 export const dailyDetails = function(){
   const URL = '/app/api/report/findDailyDetails';
+  const API = host + URL;
+  return API;
+}
+// 店月报
+export const findMonthDetails = function(){
+  const URL = '/app/api/report/findMonthDetails';
   const API = host + URL;
   return API;
 }

@@ -1,12 +1,12 @@
 ﻿<template>
   <div>
     <Row :gutter="24" class="option">
-      <Col span="4">
-        <DatePicker type="date" placeholder="选择日期" style="width: 100%" v-model="date"></DatePicker>
-      </Col>
-      <Col span="2">
-        <Button class="hy_btn" @click="seacher">查询</Button>
-      </Col>
+      <!--<Col span="4">-->
+        <!--<DatePicker type="date" placeholder="选择日期" style="width: 100%" v-model="date"></DatePicker>-->
+      <!--</Col>-->
+      <!--<Col span="2">-->
+        <!--<Button class="hy_btn" @click="seacher">查询</Button>-->
+      <!--</Col>-->
       <Col span="2">
         <Button class="hy_btn" @click="newyy">新建预约</Button>
       </Col>
@@ -18,11 +18,11 @@
 
     <Modal v-model="model1" :title="text" @on-ok="ok" :mask-closable="false">
       <div>开始时间</div>
-      <DatePicker type="datetime" v-model="newDate" placeholder="选择预约日期和时间" :options="options" style="width: 200px"></DatePicker>
+      <DatePicker type="datetime" v-model="newDate" placeholder="选择预约日期和时间" :options="options" style="width: 200px" format="yyyy-MM-dd HH:mm"></DatePicker>
       <br/>
       <br/>
       <div>结束时间</div>
-      <DatePicker type="datetime" v-model="newDate2" placeholder="选择预约日期和时间" :options="options" style="width: 200px"></DatePicker>
+      <DatePicker type="datetime" v-model="newDate2" placeholder="选择预约日期和时间" :options="options" style="width: 200px" format="yyyy-MM-dd HH:mm"></DatePicker>
       <br/>
       <br/>
       <div>用户选择</div>

@@ -5,23 +5,12 @@
     <br/>
     <br/>
     <h3>报表详情</h3>
-    <Checkbox-group v-model="tableColumnsChecked" @on-change="changeTableColumns">
-      <Checkbox label="yj">全店业绩</Checkbox>
-      <Checkbox label="kl">全店客流</Checkbox>
-      <Checkbox label="sc">全店实操</Checkbox>
-      <Checkbox label="ddrs">全店到店人数</Checkbox>
-      <Checkbox label="gdxm">高端项目</Checkbox>
-      <Checkbox label="kkxm">卡扣项目</Checkbox>
-      <Checkbox label="kkcp">卡扣产品</Checkbox>
-      <Checkbox label="gryj">是否记录店长个人业绩</Checkbox>
-      <Checkbox label="other">备注</Checkbox>
-    </Checkbox-group>
     <Table :data="tableData2" :columns="tableColumns2" border></Table>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
-  import { re_mouth } from '../../interface';
+  import { findMonthDetails } from '../../interface';
 
   export default {
     name: 'r_moth',
@@ -30,11 +19,12 @@
         date: '',
         tableData2: [],
         tableColumns2: [],
-        tableColumnsChecked: ['yj', 'kl', 'sc', 'ddrs', 'gdxm', 'kkxm', 'kkcp', 'gryj', 'other']
+        tableColumnsChecked: ['cashPerformance', 'shopPassenger', 'fullShopPractice', 'fullStoreNumber', 'highEndProject', 'buckleProject', 'product', 'recordTheStoreManager', 'remarks']
       }
     },
     mounted () {
       this.changeTableColumns();
+      this.getData();
     },
     methods: {
       getDate(date) {
@@ -46,41 +36,41 @@
             title: '日期',
             key: 'date',
           },
-          yj: {
+          cashPerformance: {
             title: '全店业绩',
-            key: 'yj',
+            key: 'cashPerformance',
           },
-          kl: {
+          shopPassenger: {
             title: '客流',
-            key: 'kl',
+            key: 'shopPassenger',
           },
-          sc: {
+          fullShopPractice: {
             title: '全店实操',
-            key: 'sc',
+            key: 'fullShopPractice',
           },
-          ddrs: {
+          fullStoreNumber: {
             title: '全店到店人数',
-            key: 'ddrs',
+            key: 'fullStoreNumber',
           },
-          gdxm: {
+          highEndProject: {
             title: '高端项目',
-            key: 'gdxm',
+            key: 'highEndProject',
           },
-          kkxm: {
+          buckleProject: {
             title: '卡扣项目',
-            key: 'kkxm',
+            key: 'buckleProject',
           },
-          kkcp: {
+          product: {
             title: '卡扣产品',
-            key: 'kkcp',
+            key: 'product',
           },
-          gryj: {
+          recordTheStoreManager: {
             title: '是否记录店长个人业绩',
-            key: 'gryj',
+            key: 'recordTheStoreManager',
           },
-          other: {
+          remarks: {
             title: '备注',
-            key: 'other',
+            key: 'remarks',
           },
         };
         let data = [table2ColumnList.date];
@@ -89,6 +79,22 @@
       },
       changeTableColumns () {
         this.tableColumns2 = this.getTable2Columns();
+      },
+      getData (date = new Date().Format('yyyy-MM')) {
+        this.$ajax({
+          method: 'GET',
+          dataType: 'JSON',
+          contentType: 'application/json;charset=UTF-8',
+          headers: {
+            "authToken": sessionStorage.getItem('authToken')
+          },
+          url: findMonthDetails() + '?date=' + date,
+        }).then((res) => {
+          this.tableColumnsChecked = res.data.title;
+          this.tableColumns2 = this.getTable2Columns();
+          // this.tableData2 = res.data.data;
+        }).catch((error) => {
+        });
       },
     }
   };

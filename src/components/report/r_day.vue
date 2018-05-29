@@ -1,7 +1,7 @@
 <template>
   <div style="min-height: 300px">
-    <DatePicker :value="date" format="yyyy-MM-dd" type="date" placeholder="选择日期"></DatePicker>
-    <Button class="hy_btn">查询</Button>
+    <DatePicker :value="ddt" format="yyyy-MM-dd" type="date" placeholder="选择日期" @on-change="(date) => this.ddt = date"></DatePicker>
+    <Button class="hy_btn" @click="serch">查询</Button>
     <br/>
     <br/>
     <h3>报表详情</h3>
@@ -11,12 +11,13 @@
 
 <script type="text/ecmascript-6">
   import { dailyDetails } from '../../interface';
+  import Format from '../ut/DateFormat';
 
   export default {
     name: 'r_day',
     data () {
       return {
-        date: '',
+        ddt: '',
         tableData2: [],
         tableColumns2: [],
         tableColumnsChecked: ['userName', 'serviceItems', 'cashPerformance', 'h_project', 'consultant', 'fPAppoint', 'fPNSpecifiedt', 'pEAppoint', 'pENSpecifiedt', 'productCash', 'porject2', 'productSnap', 'claspCourseName', 'claspCourseMoney']
@@ -88,10 +89,17 @@
         };
         let data = [table2ColumnList.name];
         this.tableColumnsChecked.forEach(col => data.push(table2ColumnList[col]));
-        console.log(data);
         return data;
       },
-      getData () {
+      serch() {
+        if(this.ddt == '') {
+          this.$Message.warning('请选择查询日期');
+          return false
+        } else {
+          this.getData(this.ddt);
+        }
+      },
+      getData (date = new Date().Format('yyyy-MM-dd')) {
         this.$ajax({
           method: 'GET',
           dataType: 'JSON',
@@ -99,7 +107,7 @@
           headers: {
             "authToken": sessionStorage.getItem('authToken')
           },
-          url: dailyDetails()
+          url: dailyDetails() + '?date=' + date,
         }).then((res) => {
           this.tableColumnsChecked = res.data.title;
           this.tableColumns2 = this.getTable2Columns();

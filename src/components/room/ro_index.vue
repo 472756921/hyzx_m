@@ -1,14 +1,6 @@
 <template>
   <div>
     <Row :gutter="24" class="option">
-      <Col span="4">
-      <Input v-model="serser" placeholder="输入房间号" style="margin-top: -1px">
-      <span slot="append" class="serc" @click="serc">查找</span>
-      </Input>
-      </Col>
-      <Col span="3">
-      <Button v-show="serShow" class="hy_btn" @click="serBack">返回主列表</Button>
-      </Col>
       <Col span="2">
       <Button class="hy_btn" @click="newEm">录入床位信息</Button>
       </Col>
@@ -19,10 +11,10 @@
     <Modal v-model="isShow" :title="r_title" @on-ok="ok" :mask-closable="false">
       <h3>床位信息</h3>
       <br/>
-      <Input v-model="roomInfo.roomNumber" placeholder="输入房间号" ><span slot="prepend">床位号：</span></Input>
+      <Input v-model="roomInfo.roomNumber" placeholder="输入床位名" ><span slot="prepend">床位名：</span></Input>
       <br>
       <br>
-      <Input v-model="roomInfo.roomName" placeholder="输入房间名" ><span slot="prepend">床位名：</span></Input>
+      <Input v-model="roomInfo.roomName" placeholder="输入床位号" ><span slot="prepend">床位号：</span></Input>
       <br>
     </Modal>
   </div>
@@ -116,7 +108,6 @@
         data:[],
         isShow: false,
         serser:'',
-        serShow: false,
         r_title:'',
 
       }
@@ -156,14 +147,12 @@
           url: r_search() +'?id='+this.serser,
         }).then( (res)=>{
           this.data = res.data;
-          this.serShow = true;
         }).catch((err)=>{
 
         })
       },
       serBack(){
         this.getRoomList(1);
-        this.serShow = false;
       },
       newEm(){
         this.isShow = true;
