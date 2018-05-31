@@ -1,7 +1,7 @@
 <template>
   <div>
-    <DatePicker :value="date" format="yyyy-MM" type="month" placeholder="选择日期"></DatePicker>
-    <Button class="hy_btn">查询</Button>
+    <DatePicker :value="date" @on-change="(date) => this.date = date" format="yyyy-MM" type="month" placeholder="选择日期"></DatePicker>
+    <Button class="hy_btn" @click="serch">查询</Button>
     <br/>
     <br/>
     <h3>报表详情</h3>
@@ -23,19 +23,22 @@
       }
     },
     mounted () {
-      this.changeTableColumns();
       this.getData();
     },
     methods: {
+      serch() {
+        if(this.date == '') {
+          this.$Message.warning('请选择查询日期');
+          return false
+        } else {
+          this.getData(this.date);
+        }
+      },
       getDate(date) {
         this.date = date;
       },
       getTable2Columns () {
         const table2ColumnList = {
-          date: {
-            title: '日期',
-            key: 'date',
-          },
           cashPerformance: {
             title: '全店业绩',
             key: 'cashPerformance',
@@ -73,12 +76,9 @@
             key: 'remarks',
           },
         };
-        let data = [table2ColumnList.date];
+        let data = [];
         this.tableColumnsChecked.forEach(col => data.push(table2ColumnList[col]));
         return data;
-      },
-      changeTableColumns () {
-        this.tableColumns2 = this.getTable2Columns();
       },
       getData (date = new Date().Format('yyyy-MM')) {
         this.$ajax({
@@ -92,7 +92,7 @@
         }).then((res) => {
           this.tableColumnsChecked = res.data.title;
           this.tableColumns2 = this.getTable2Columns();
-          // this.tableData2 = res.data.data;
+          this.tableData2 = res.data.data;
         }).catch((error) => {
         });
       },

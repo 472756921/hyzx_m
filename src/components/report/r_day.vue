@@ -37,10 +37,13 @@
           serviceItems: {
             title: '服务项目',
             key: 'serviceItems',
+            render: (h, p)=>{
+              return p.row.serviceItems
+            },
           },
           cashPerformance: {
             title: '现金业绩',
-            key: 'cashPerformance',
+            key: 'cashPerformance'
           },
           h_project: {
             title: '高端项目',
@@ -81,6 +84,9 @@
           claspCourseName: {
             title: '卡扣疗程-名称',
             key: 'claspCourseName',
+            render: (h, p)=>{
+              return p.row.claspCourseName
+            },
           },
           claspCourseMoney: {
             title: '卡扣疗程-金额',

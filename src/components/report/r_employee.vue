@@ -1,38 +1,16 @@
 <template>
   <div style="min-height: 300px">
-    <DatePicker :value="date" format="yyyy-MM" type="month" placeholder="选择日期"></DatePicker>
-    <Button class="hy_btn">查询</Button>
+    <DatePicker :value="date" @on-change="(date) => this.date = date" format="yyyy-MM" type="month" placeholder="选择日期"></DatePicker>
+    <Button class="hy_btn" @click="serch">查询</Button>
     <br/>
     <br/>
     <h3>报表详情</h3>
-    <Checkbox-group v-model="tableColumnsChecked" @on-change="changeTableColumns">
-      <Checkbox label="hycz1">会员储值-售前</Checkbox>
-      <Checkbox label="hycz2">会员储值-售后</Checkbox>
-      <Checkbox label="mr1">美容-现金</Checkbox>
-      <Checkbox label="mr2">美容-实操</Checkbox>
-      <Checkbox label="mf1">美发-现金</Checkbox>
-      <Checkbox label="mf2">美发-卡扣</Checkbox>
-      <Checkbox label="yj1">瑜伽-现金</Checkbox>
-      <Checkbox label="yj2">瑜伽-卡扣</Checkbox>
-      <Checkbox label="cp1">产品-现金</Checkbox>
-      <Checkbox label="cp2">产品-卡扣</Checkbox>
-      <Checkbox label="gd1">高端-现金</Checkbox>
-      <Checkbox label="gd2">高端-卡扣</Checkbox>
-      <Checkbox label="kl1">客流</Checkbox>
-      <Checkbox label="ddrs">到店人数</Checkbox>
-      <Checkbox label="scddrs">首次到店人数</Checkbox>
-      <Checkbox label="sccjrs">首次成交人数</Checkbox>
-      <Checkbox label="eccjrs">二次成交人数</Checkbox>
-      <Checkbox label="scze">实操总额</Checkbox>
-      <Checkbox label="kdj">客单价</Checkbox>
-      <Checkbox label="qk">欠款</Checkbox>
-    </Checkbox-group>
     <Table :data="tableData2" :columns="tableColumns2" border></Table>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
-  import { re_day } from '../../interface';
+  import { findGuWenMonthDetails } from '../../interface';
 
   export default {
     name: 'r_employee',
@@ -41,107 +19,127 @@
         date: '',
         tableData2: [],
         tableColumns2: [],
-        tableColumnsChecked: ['hycz1', 'hycz2','mr1','mr2','mf1','mf2','yj1','yj2','cp1','cp2','gd1','gd2','kl1','ddrs','scddrs','sccjrs','eccjrs','scze','kdj','qk']
+        tableColumnsChecked: ['preSale', 'aftermarket','beautyCash','beautyPractice','hairdressingCash','hairdressingSnap','yogaCash','yogaSnap','productCash','productSnap','projectCash','projectSnap','passenger','storeNumber','firstStoreNumber','firstTransactionNumber','twoTurnover','totalActualExercise','unitPrice','arrears']
       }
     },
     methods: {
+      serch() {
+        if(this.date == '') {
+          this.$Message.warning('请选择查询日期');
+          return false
+        } else {
+          this.getData(this.date);
+        }
+      },
       getTable2Columns () {
         const table2ColumnList = {
-          date: {
-            title: '日期',
-            key: 'date',
-          },
-          hycz1: {
+          preSale: {
             title: '会员储值-售前',
-            key: 'hycz1',
+            key: 'preSale',
           },
-          hycz2: {
+          aftermarket: {
             title: '会员储值-售后',
-            key: 'hycz2',
+            key: 'aftermarket',
           },
-          mr1: {
+          beautyCash: {
             title: '美容-现金',
-            key: 'mr1',
+            key: 'beautyCash',
           },
-          mr2: {
+          beautyPractice: {
             title: '美容-实操',
-            key: 'mr2',
+            key: 'beautyPractice',
           },
-          mf1: {
+          hairdressingCash: {
             title: '美发-现金',
-            key: 'mf1',
+            key: 'hairdressingCash',
           },
-          mf2: {
+          hairdressingSnap: {
             title: '美发-卡扣',
-            key: 'mf2',
+            key: 'hairdressingSnap',
           },
-          yj1: {
+          yogaCash: {
             title: '瑜伽-现金',
-            key: 'yj1',
+            key: 'yogaCash',
           },
-          yj2: {
+          yogaSnap: {
             title: '瑜伽-卡扣',
-            key: 'yj2',
+            key: 'yogaSnap',
           },
-          cp1: {
+          productCash: {
             title: '产品-现金',
-            key: 'cp1',
+            key: 'productCash',
           },
-          cp2: {
+          productSnap: {
             title: '产品-卡扣',
-            key: 'cp2',
+            key: 'productSnap',
           },
-          gd1: {
+          projectCash: {
             title: '高端-现金',
-            key: 'gd1',
+            key: 'projectCash',
           },
-          gd2: {
+          projectSnap: {
             title: '高端-卡扣',
-            key: 'gd2',
+            key: 'projectSnap',
           },
-          kl1: {
+          passenger: {
             title: '客流',
-            key: 'kl1',
+            key: 'passenger',
           },
-          ddrs: {
+          storeNumber: {
             title: '到店人数',
-            key: 'ddrs',
+            key: 'storeNumber',
           },
-          scddrs: {
+          firstStoreNumber: {
             title: '首次到店人数',
-            key: 'scddrs',
+            key: 'firstStoreNumber',
           },
-          sccjrs: {
+          firstTransactionNumber: {
             title: '首次成交人数',
-            key: 'sccjrs',
+            key: 'firstTransactionNumber',
           },
-          eccjrs: {
+          twoTurnover: {
             title: '二次成交人数',
-            key: 'eccjrs',
+            key: 'twoTurnover',
           },
-          scze: {
+          totalActualExercise: {
             title: '实操总额',
-            key: 'scze',
+            key: 'totalActualExercise',
           },
-          kdj: {
+          unitPrice: {
             title: '客单价',
-            key: 'kdj',
+            key: 'unitPrice',
           },
-          qk: {
+          arrears: {
             title: '欠款',
-            key: 'qk',
+            key: 'arrears',
           },
         };
-        let data = [table2ColumnList.date];
+        let data = [];
         this.tableColumnsChecked.forEach(col => data.push(table2ColumnList[col]));
         return data;
       },
-      changeTableColumns () {
-        this.tableColumns2 = this.getTable2Columns();
+      getData (date = new Date().Format('yyyy-MM')) {
+        this.$ajax({
+          method: 'GET',
+          dataType: 'JSON',
+          contentType: 'application/json;charset=UTF-8',
+          headers: {
+            "authToken": sessionStorage.getItem('authToken')
+          },
+          url: findGuWenMonthDetails() + '?date=' + date,
+        }).then((res) => {
+          this.tableColumnsChecked = res.data.title;
+          this.tableColumns2 = this.getTable2Columns();
+          this.tableData2 = res.data.data;
+        }).catch((error) => {
+        });
+      },
+      getDate(date) {
+        this.date = date;
       },
     },
     mounted () {
-      this.changeTableColumns();
+      this.getData();
     }
   };
 </script>

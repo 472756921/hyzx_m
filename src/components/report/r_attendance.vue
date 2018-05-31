@@ -1,32 +1,16 @@
 <template>
   <div style="min-height: 300px">
-    <DatePicker :value="date" format="yyyy-MM" type="month" placeholder="选择日期"></DatePicker>
-    <Button class="hy_btn">查询</Button>
+    <DatePicker :value="date" @on-change="(date) => this.date = date" format="yyyy-MM" type="month" placeholder="选择日期"></DatePicker>
+    <Button class="hy_btn" @click="serch">查询</Button>
     <br/>
     <br/>
     <h3>报表详情</h3>
-    <Checkbox-group v-model="tableColumnsChecked" @on-change="changeTableColumns">
-      <Checkbox label="kl">客流</Checkbox>
-      <Checkbox label="cath">现金业绩-储值业绩</Checkbox>
-      <Checkbox label="cathlc">现金业绩-现金疗程</Checkbox>
-      <Checkbox label="h_project_cath">高端项目-现金</Checkbox>
-      <Checkbox label="h_project_card">高端项目-卡扣</Checkbox>
-      <Checkbox label="face">面部指定</Checkbox>
-      <Checkbox label="face2">面部非指定</Checkbox>
-      <Checkbox label="body">身体指定</Checkbox>
-      <Checkbox label="body2">身体非指定</Checkbox>
-      <Checkbox label="porject">产品现金</Checkbox>
-      <Checkbox label="porject3">产品卡扣</Checkbox>
-      <Checkbox label="card_porject">卡扣疗程业绩</Checkbox>
-      <Checkbox label="card_porject2">赠送手工</Checkbox>
-      <Checkbox label="consultant">转介绍业绩</Checkbox>
-    </Checkbox-group>
     <Table :data="tableData2" :columns="tableColumns2" border></Table>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
-  import { re_day } from '../../interface';
+  import { findStoreMonthDetails } from '../../interface';
 
   export default {
     name: 'r_attendance',
@@ -35,67 +19,91 @@
         date: '',
         tableData2: [],
         tableColumns2: [],
-        tableColumnsChecked: ['kl', 'cath', 'cathlc', 'h_project_cath', 'h_project_card', 'consultant', 'face', 'face2', 'body', 'body2', 'porject', 'porject3', 'card_porject', 'card_porject2']
+        tableColumnsChecked: ['passenger', 'storagePerformance', 'cashCourse', 'projectCash', 'projectSnap', 'introducePerformance', 'facialPracticeAppoint', 'facialPracticeNonSpecifiedt', 'physicalExerciseAppoint', 'physicalExerciseNonSpecifiedt', 'productCash', 'productSnap', 'cardPerformance', 'giveHandToHand']
       }
     },
     methods: {
+      serch() {
+        if(this.date == '') {
+          this.$Message.warning('请选择查询日期');
+          return false
+        } else {
+          this.getData(this.date);
+        }
+      },
+      getData (date = new Date().Format('yyyy-MM')) {
+        this.$ajax({
+          method: 'GET',
+          dataType: 'JSON',
+          contentType: 'application/json;charset=UTF-8',
+          headers: {
+            "authToken": sessionStorage.getItem('authToken')
+          },
+          url: findStoreMonthDetails() + '?date=' + date,
+        }).then((res) => {
+          this.tableColumnsChecked = res.data.title;
+          this.tableColumns2 = this.getTable2Columns();
+          this.tableData2 = res.data.data;
+        }).catch((error) => {
+        });
+      },
       getTable2Columns () {
         const table2ColumnList = {
-          kl: {
+          passenger: {
             title: '客流',
-            key: 'kl',
+            key: 'passenger',
           },
-          cath: {
+          storagePerformance: {
             title: '现金业绩-储值业绩',
-            key: 'cath',
+            key: 'storagePerformance',
           },
-          cathlc: {
+          cashCourse: {
             title: '现金业绩-现金疗程',
-            key: 'cathlc',
+            key: 'cashCourse',
           },
-          h_project_card: {
+          projectSnap: {
             title: '高端项目-卡扣',
-            key: 'h_project',
+            key: 'projectSnap',
           },
-          h_project_cath: {
+          projectCash: {
             title: '高端项目-现金',
-            key: 'h_project',
+            key: 'projectCash',
           },
-          face: {
+          facialPracticeAppoint: {
             title: '面部指定',
-            key: 'face',
+            key: 'facialPracticeAppoint',
           },
-          face2: {
+          facialPracticeNonSpecifiedt: {
             title: '面部非指定',
-            key: 'face2',
+            key: 'facialPracticeNonSpecifiedt',
           },
-          body: {
+          physicalExerciseAppoint: {
             title: '身体指定',
-            key: 'body',
+            key: 'physicalExerciseAppoint',
           },
-          body2: {
+          physicalExerciseNonSpecifiedt: {
             title: '身体非指定',
-            key: 'body2',
+            key: 'physicalExerciseNonSpecifiedt',
           },
-          porject: {
+          productCash: {
             title: '产品现金',
-            key: 'porject',
+            key: 'productCash',
           },
-          porject3: {
+          productSnap: {
             title: '产品卡扣',
-            key: 'porject3',
+            key: 'productSnap',
           },
-          card_porject: {
+          cardPerformance: {
             title: '卡扣疗程业绩',
-            key: 'card_porject',
+            key: 'cardPerformance',
           },
-          card_porject2: {
+          giveHandToHand: {
             title: '赠送手工',
-            key: 'card_porject2',
+            key: 'giveHandToHand',
           },
-          consultant: {
+          introducePerformance: {
             title: '转介绍业绩',
-            key: 'consultant',
+            key: 'introducePerformance',
           },
         };
         let data = [];
@@ -107,7 +115,7 @@
       },
     },
     mounted () {
-      this.changeTableColumns();
+      this.getData();
     }
   };
 </script>

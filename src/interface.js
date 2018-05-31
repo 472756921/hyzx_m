@@ -396,3 +396,15 @@ export const findMonthDetails = function(){
   const API = host + URL;
   return API;
 }
+// 顾问月报
+export const findGuWenMonthDetails = function(){
+  const URL = '/app/api/report/findGuWenMonthDetails';
+  const API = host + URL;
+  return API;
+}
+// 技师月报
+export const findStoreMonthDetails = function(){
+  const URL = '/app/api/report/findStoreMonthDetails';
+  const API = host + URL;
+  return API;
+}
