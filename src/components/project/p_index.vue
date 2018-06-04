@@ -1,13 +1,5 @@
 <template>
   <div>
-    <Row :gutter="24" class="option">
-      <Col span="4">
-        <Input v-model="name" placeholder="编号 / 名称" style="margin-top: -1px">
-          <span slot="append" class="serc" @click="serc">查找</span>
-        </Input>
-      </Col>
-    </Row>
-
     <Table :columns="columns" :data="data"></Table>
 
     <Modal  v-model="emac" title="项目信息" @on-ok="ok"  >

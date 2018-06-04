@@ -49,6 +49,10 @@
       },
       getTable2Columns () {
         const table2ColumnList = {
+          name: {
+            title: '技师姓名',
+            key: 'name',
+          },
           passenger: {
             title: '客流',
             key: 'passenger',
@@ -106,7 +110,7 @@
             key: 'introducePerformance',
           },
         };
-        let data = [];
+        let data = [table2ColumnList.name];
         this.tableColumnsChecked.forEach(col => data.push(table2ColumnList[col]));
         return data;
       },

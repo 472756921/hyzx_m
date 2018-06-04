@@ -11,6 +11,7 @@
       </Col>
     </Row>
     <Table :columns="columns" :data="data"></Table>
+    <Page :current="1" :total="total" @on-change="getPage" simple style="margin: 10px auto;text-align: center;" :page-size="30"></Page>
 
     <Modal  v-model="emac" :title="emclass" @on-ok="ok"  >
       <span>用户选择：</span>
@@ -93,6 +94,8 @@
     name: 'c_index',
     data () {
       return {
+        pages: 1,
+        total: 1,
         order: {},
         u_name: '',
         emclass: '',
@@ -185,10 +188,13 @@
       }
     },
     created() {
-      this.getList()
+      this.getList(1)
       this.GetData('u_Alllist',this, this.setData);
     },
     methods: {
+      getPage(current){
+        this.getList(current);
+      },
       checkOrder() {
         this.$ajax({
           method: 'GET',
@@ -208,7 +214,7 @@
           this.u_list = data;
         }
       },
-      getList() {
+      getList(page) {
         this.$ajax({
           method: 'GET',
           dataType: 'JSON',
@@ -217,9 +223,11 @@
           },
           data: {},
           contentType: 'application/json;charset=UTF-8',
-          url: c_list() + '?page=1&pageSize=30',
+          url: c_list() + '?page='+page+'&pageSize=30',
         }).then((res) => {
           this.data = res.data.results;
+          this.pages = res.data.pages;
+          this.total = Math.ceil(res.data.total/30);
         }).catch((error) => {
         });
       },

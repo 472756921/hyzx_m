@@ -15,7 +15,7 @@
       </Row>
       <br/>
       <Table :columns="columns" :data="data"></Table>
-      <Page :current="2" :total="50" simple class="center"></Page>
+      <Page :current="2" :total="50" simple class="center" :page-size="30" @on-change="getPage"></Page>
     </div>
 </template>
 
@@ -25,6 +25,8 @@
       name: 's_small',
       data () {
         return {
+          pages: 1,
+          total: 1,
           name: '',
           columns: [
             {
@@ -70,6 +72,9 @@
             this.$Message.warning('请输入名称');
           }
         },
+        getPage(current) {   //
+          this.getList(current);
+        },
         repot() {
 
         },
@@ -84,6 +89,8 @@
             url: s_outStock() + '?page='+page+'&pageSize=30&type=1',
           }).then((res) => {
             this.data = res.data.results;
+            this.pages = res.data.pages;
+            this.total = Math.ceil(res.data.total/30);
           }).catch((error) => {
           });
         },

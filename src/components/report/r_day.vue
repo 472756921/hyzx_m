@@ -93,7 +93,7 @@
             key: 'claspCourseMoney',
           },
         };
-        let data = [table2ColumnList.name];
+        let data = [];
         this.tableColumnsChecked.forEach(col => data.push(table2ColumnList[col]));
         return data;
       },

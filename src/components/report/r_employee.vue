@@ -33,6 +33,10 @@
       },
       getTable2Columns () {
         const table2ColumnList = {
+          name: {
+            title: '顾问姓名',
+            key: 'name',
+          },
           preSale: {
             title: '会员储值-售前',
             key: 'preSale',
@@ -114,7 +118,7 @@
             key: 'arrears',
           },
         };
-        let data = [];
+        let data = [table2ColumnList.name];
         this.tableColumnsChecked.forEach(col => data.push(table2ColumnList[col]));
         return data;
       },

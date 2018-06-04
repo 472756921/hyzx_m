@@ -86,7 +86,8 @@
       </div>
       </Col>
     </Row>
-    <Page :current="1" :total="pages*10" @on-change="getPage" simple style="margin: 10px auto;text-align: center;"></Page>
+
+    <Page :current="1" :total="total" @on-change="getPage" simple style="margin: 10px auto;text-align: center;" :page-size="10"></Page>
 
     <Modal  v-model="service" :title="serCard" @on-ok="ok" :mask-closable="false">
       <Checkbox v-model="orderINfo.anonymous"  :disabled="serCard=='修改现金单'?true:false">匿名现金单</Checkbox>
@@ -190,6 +191,7 @@
         order: [],
         userDiscountShow:false,
         pages: '',
+        total: 1,
         ce_list:[],
         rule:[],
         test1:{id:10,realName:'test1'},
@@ -226,10 +228,11 @@
           headers: {
             "authToken": sessionStorage.getItem('authToken')
           },
-          url: ser_list() + '?page='+page+'&pageSize=6&orderType=1',
+          url: ser_list() + '?page='+page+'&pageSize=10&orderType=1',
         }).then((res) => {
           this.order = res.data.results;
           this.pages = res.data.pages;
+          this.total = Math.ceil(res.data.total/30);
           this.ordert=[];
         }).catch((error) => {
         });

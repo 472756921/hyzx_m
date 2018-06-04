@@ -12,6 +12,8 @@
     </Row>
     <Table :columns="columns" :data="data"></Table>
 
+    <Page :current="pageN" :page-size='30' :total="total" simple class="center" @on-change="getPage"></Page>
+
     <Modal  v-model="emac" :title="emclass" @on-ok="saveUser"  >
       <h3>基础信息</h3>
       <br/>
@@ -101,6 +103,8 @@
     name: 'u_index',
     data () {
       return {
+        pageN: 1,
+        total: 1,
         u_name: '',
         cards: '用户开卡',
         single: false,
@@ -157,20 +161,6 @@
             align: 'center',
             render: (h, params) => {
               return h('div', [
-//                h('Button', {
-//                  props: {
-//                    type: 'success',
-//                    size: 'small'
-//                  },
-//                  style: {
-//                    marginRight: '5px'
-//                  },
-//                  on: {
-//                    click: () => {
-//                      this.createService(params.index)
-//                    }
-//                  }
-//                }, '创建服务单'),
                 h('Button', {
                   props: {
                     type: 'primary',
@@ -271,6 +261,9 @@
       this.getList(1);
     },
     methods: {
+      getPage(current){
+        this.getList(current);
+      },
       getList(page) {
         this.$ajax({
           method: 'GET',
@@ -282,6 +275,8 @@
           url: u_list() + '?page='+page+'&pageSize=30',
         }).then((res) => {
           this.data = res.data.results;
+          this.pageN = res.data.pages;
+          this.total = Math.ceil(res.data.total/30);
         }).catch((error) => {
         });
       },
@@ -337,7 +332,6 @@
       },
       serc() {    //搜索
         if (this.name == '') {
-          // this.$Message.warning('请输入用户名字');
           this.getList(1);
           return
         }
@@ -408,5 +402,9 @@
 <style scoped>
   .serc{
     cursor: pointer;
+  }
+  .center{
+    margin: 10px auto;
+    text-align: center;
   }
 </style>

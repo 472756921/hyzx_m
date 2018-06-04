@@ -21,7 +21,7 @@
       </Row>
       <br/>
       <Table :columns="columns" :data="data"></Table>
-      <Page :current="1" :total="50" simple class="center"></Page>
+      <Page :current="pages" :total="total" simple class="center"  :page-size="30" @on-change="getPage"></Page>
 
       <Modal  v-model="emac" title="新增入库" @on-ok="saveE">
         <Input v-model="stock.name">
@@ -62,6 +62,8 @@
       name: 's_big',
       data () {
         return {
+          pages: 1,
+          total: 1,
           type: 1,
           stock: {
             name: '',
@@ -179,6 +181,8 @@
             url: url ,
           }).then((res) => {
             this.data = res.data.results;
+            this.pages = res.data.pages;
+            this.total = Math.ceil(res.data.total/30);
           }).catch((error) => {
           });
         },
@@ -241,8 +245,8 @@
           }).catch((error) => {
           });
         },
-        repot() {   //
-
+        getPage(current) {   //
+          this.getList(current, this.type);
         },
         serc() {    //搜索
           if (this.name == '') {

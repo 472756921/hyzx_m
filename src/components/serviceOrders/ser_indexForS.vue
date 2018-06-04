@@ -90,7 +90,7 @@
       </Col>
     </Row>
 
-    <Page :current="1" :total="pages*10" @on-change="getPage" simple style="margin: 10px auto;text-align: center;"></Page>
+    <Page :current="1" :total="total" @on-change="getPage" simple style="margin: 10px auto;text-align: center;" :page-size="10"></Page>
 
     <Modal  v-model="service" :title="serCard" @on-ok="ok" :mask-closable="false">
       <Checkbox v-model="orderINfo.anonymous"  :disabled="serCard=='修改服务单'?true:false">匿名服务单</Checkbox>
@@ -188,7 +188,6 @@
           preSale: '',
         },
         userCardInfo:'',
-
         u_list: [
           {
             id:'1',
@@ -202,6 +201,7 @@
         pr_list: [],
         order: [],
         pages:'',
+        total: 1,
         userDiscountShow:false,
         ce_list:[],
         rule:[],
@@ -238,10 +238,11 @@
           headers: {
             "authToken": sessionStorage.getItem('authToken')
           },
-          url: ser_list() + '?page='+page+'&pageSize=6&orderType=2',
+          url: ser_list() + '?page='+page+'&pageSize=10&orderType=2',
         }).then((res) => {
           this.order = res.data.results;
           this.pages = res.data.pages;
+          this.total = Math.ceil(res.data.total/30);
           this.ordert=[];
         }).catch((error) => {
         });
