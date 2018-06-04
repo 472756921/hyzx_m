@@ -233,6 +233,8 @@
           this.order = res.data.results;
           this.pages = res.data.pages;
           this.total = Math.ceil(res.data.total/30);
+          console.log(res.data.total/30);
+          console.log(this.total);
           this.ordert=[];
         }).catch((error) => {
         });
