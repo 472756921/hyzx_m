@@ -5,7 +5,7 @@
         <Button class="hy_btn" @click="newEm">新增员工</Button>
       </Col>
       <Col span="2">
-      <Button class="hy_btn" @click="newTe">店长指定</Button>
+      <Button class="hy_btn" @click="newTe">指定优先技师</Button>
       </Col>
       <Col span="2"  push="16">
         <span class="herf_a" @click="lizhi">离职员工</span>
@@ -13,7 +13,8 @@
     </Row>
     <Table :columns="columns" :data="data" :row-class-name="rowClassName"></Table>
 
-    <Modal v-model="onTe" title="店长指定技师" :mask-closable="false" @on-ok="teok()">
+    <Modal v-model="onTe" title="指定优先技师" :mask-closable="false" @on-ok="teok()">
+      <p>选择后，该员工将作为顾客服务顺序中的店长指定项中的技师</p>
       选择技师：
       <Select v-model="teData" style="width:200px">
         <Option v-for="item in data" :value="item.id" :key="item.id">{{item.realName}}</Option>
@@ -133,6 +134,13 @@
           {
             title: '姓名',
             key: 'realName',
+            render: (h, params) => {
+              if(params.row.roleId == 2 ){
+                return h('span',params.row.realName + '-店长');
+              } else {
+                return h('span',params.row.realName);
+              }
+            }
           },
           {
             title: '年龄',

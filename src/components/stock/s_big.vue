@@ -28,7 +28,7 @@
         <span slot="prepend">商品名称</span>
         </Input>
         <br/>
-        <Input v-model="stock.quantity">
+        <Input v-model="stock.actualQuantity">
         <span slot="prepend">商品数量</span>
         </Input>
         <br/>
@@ -67,10 +67,9 @@
           type: 1,
           stock: {
             name: '',
-            quantity: '',
+            actualQuantity: '',
             source: '',
             expiration: '',
-            quantity: '',
           },
           p_number: '',
           m_id:'',
@@ -156,20 +155,36 @@
       },
       methods: {
         getList(page, type) {
-          let url = '';
           this.type = type;
-          if(type === 1) {
-            url = s_List() + '?page='+page+'&pageSize=30';
-            this.columns = this.columnsP;
+          let url = '';
+          if(!/^\d+$/.test(page)) {
+            if(type === 1) {
+              url = s_List() + '?name='+page;
+              this.columns = this.columnsP;
+            }
+            if(type === 2) {
+              url = s_inStock() + '?name='+page;
+              this.columns = this.columnsR;
+            }
+            if(type === 3) {
+              url = s_outStock() + '?name='+page;
+              this.columns = this.columnsC;
+            }
+          } else {
+            if(type === 1) {
+              url = s_List() + '?page='+page+'&pageSize=30';
+              this.columns = this.columnsP;
+            }
+            if(type === 2) {
+              url = s_inStock() + '?page='+page+'&pageSize=30';
+              this.columns = this.columnsR;
+            }
+            if(type === 3) {
+              url = s_outStock() + '?page='+page+'&pageSize=30';
+              this.columns = this.columnsC;
+            }
           }
-          if(type === 2) {
-            url = s_inStock() + '?page='+page+'&pageSize=30';
-            this.columns = this.columnsR;
-          }
-          if(type === 3) {
-            url = s_outStock() + '?page='+page+'&pageSize=30';
-            this.columns = this.columnsC;
-          }
+          console.log(url)
           this.$ajax({
             method: 'GET',
             dataType: 'JSON',
@@ -229,7 +244,6 @@
         },
         saveE() {
           this.stock.expiration = new Date(this.stock.expiration).Format('yyyy-MM-dd')
-          this.stock.actualQuantity = 1;
           this.$ajax({
             method: 'POST',
             dataType: 'JSON',
@@ -250,7 +264,9 @@
         },
         serc() {    //搜索
           if (this.name == '') {
-            this.$Message.warning('请输入名称');
+            this.getList(1, this.type);
+          } else {
+            this.getList(this.name, this.type);
           }
         },
       },

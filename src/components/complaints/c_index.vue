@@ -214,7 +214,12 @@
           this.u_list = data;
         }
       },
-      getList(page) {
+      getList(page, un) {
+        console.log(un);
+        let URL =  c_list() + '?page='+page+'&pageSize=30';
+        if(un){
+          URL =  c_list() + '?name='+un;
+        }
         this.$ajax({
           method: 'GET',
           dataType: 'JSON',
@@ -223,7 +228,7 @@
           },
           data: {},
           contentType: 'application/json;charset=UTF-8',
-          url: c_list() + '?page='+page+'&pageSize=30',
+          url:URL,
         }).then((res) => {
           this.data = res.data.results;
           this.pages = res.data.pages;
@@ -233,7 +238,9 @@
       },
       serc() {    //搜索
         if (this.name == '') {
-          this.$Message.warning('请输入用户或技师名字');
+          this.getList(1)
+        } else {
+          this.getList(1, this.name)
         }
       },
       showOrder(){
