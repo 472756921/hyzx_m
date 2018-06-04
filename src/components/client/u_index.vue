@@ -335,6 +335,15 @@
           this.getList(1);
           return
         }
+
+        if(/^\d+$/.test(this.name)) {
+          //输入的电话号码
+          if(this.name.length !== 11){
+            this.$Message.error('请输入完整11位电话号码');
+            return
+          }
+        }
+
         this.$ajax({
           method: 'GET',
           dataType: 'JSON',
