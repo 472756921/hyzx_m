@@ -230,7 +230,10 @@
           this.r_list = data;
         }
       },
-      getList(page) {
+      getList(page, name) {
+        if(name == undefined) {
+          name = '';
+        }
         this.$ajax({
           method: 'GET',
           dataType: 'JSON',
@@ -238,7 +241,7 @@
           headers: {
             "authToken": sessionStorage.getItem('authToken')
           },
-          url: ser_list() + '?page='+page+'&pageSize=10&orderType=2',
+          url: ser_list() + '?page='+page+'&pageSize=10&orderType=2&name='+name,
         }).then((res) => {
           this.order = res.data.results;
           this.pages = res.data.pages;
@@ -294,7 +297,9 @@
       },
       serc() {    //搜索
         if (this.name == '') {
-          this.$Message.warning('请输入用户名字');
+          this.getList(1);
+        }else {
+          this.getList(1, this.serser);
         }
       },
       newEm() {
