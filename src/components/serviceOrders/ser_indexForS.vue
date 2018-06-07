@@ -57,17 +57,19 @@
             <div class="orderLititle">非卡扣项目：</div>
             <div class="orderLiCon"  style="background: #f7f7f7;padding-left: 10px">
               <Row>
-                <Col span="12" v-for="(it,i) in item.project" :key="it.id">{{ it.projectName }} &nbsp;<span class="price">￥{{ it.money }}</span></Col>
+                <Col span="12" v-for="(it,i) in item.project" :key="it.id">
+                  {{ it.projectName }} &nbsp;
+                  <span class="price">￥{{ it.money }}</span>
+                </Col>
               </Row>
-
-
             </div>
           </div>
-
           <div v-if="item.cardProject!=null"><span class="orderLititle">卡扣项目：</span>
             <div class="orderLiCon" style="background: #f7f7f7;padding-left: 10px">
               <Row>
-                <Col span="12" v-for="(it,i) in item.cardProject" :key="it.id">{{ it.projectName }} &nbsp;<span class="price">￥{{ it.money }}</span></Col>
+                <Col span="12" v-for="(it,i) in item.cardProject" :key="it.id">
+                 {{ it.projectName }} &nbsp;<span class="price">￥{{ it.money }}</span>
+                </Col>
               </Row>
             </div>
           </div>

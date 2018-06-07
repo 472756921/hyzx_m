@@ -62,8 +62,27 @@
         question: [
           {key: 'checkTime', title: '添加日期'},
           {key: 'description', title: '问题描述'},
-          {key: 'programme', title: '解决方案', render:(h, p)=>{if(p.row.programme == 1){return h('span','基础方案')}else if(p.row.programme == 2 ){return h('span','推荐方案')} else if(p.row.programme == 3 ) {return h('span','最优方案')}else if(p.row.programme == 0 ) {return h('span','未指定')}}},
-          {key: 'proStatus', title: '状态', render:(h, p)=>{if(p.row.proStatus == 2){return h('span',{style:{color:'green'}},'已解决')}else if(p.row.proStatus == 1 ){return h('span','正在解决')}}},
+          {key: 'programme', title: '解决方案',
+            render:(h, p)=>{
+              if(p.row.programme == 1){
+                return h('span','基础方案')
+              }else if(p.row.programme == 2 ){
+                return h('span','推荐方案')
+              } else if(p.row.programme == 3 ) {
+                return h('span','最优方案')}
+                else if(p.row.programme == 0 ) {
+                return h('span','未指定')
+              }
+            }
+          },
+          {key: 'proStatus', title: '状态',
+            render:(h, p)=>{
+            if(p.row.proStatus == 2){
+              return h('span',{style:{color:'green'}},'已解决')
+            }else if(p.row.proStatus == 1 ){
+              return h('span','正在解决')}
+            }
+          },
           {key: 'action', title: '操作', render: (h, params) => {
             return h('div', [
               h('Button', {
@@ -213,6 +232,10 @@
         this.newquestionF = true;
       },
       way(row) {
+        if(this.solutionList.length === 0) {
+          this.$Message.warning('该门店暂未配置解决方案');
+          return '';
+        }
         this.questionID = row.id;
         if(row.programme == 0) {
           this.waysF = false;
@@ -225,7 +248,6 @@
         }
         this.wayf = true;
         this.proids = row.proids;
-
       },
       savePlan() {
         this.$ajax({
@@ -250,11 +272,14 @@
       //获取基础方案
       getBasic(data){
         let arr = data;
-        let list = new Array();
+        let list = [];
         let res1 =[];
         let res2 = [];
         let basicname =[];
         let basicid = [];
+        if(this.solutionList.length === 0) {
+          return '';
+        }
         for(let i in arr){
           for(let j in this.solutionList){
             if(arr[i] == this.solutionList[j].problemId){
@@ -281,6 +306,9 @@
       },
       //获取最优方案
       getBest(data){
+        if(this.solutionList.length === 0) {
+          return '';
+        }
         let arr = data;
         let list = new Array();
         let res1 =[];
@@ -312,6 +340,9 @@
       },
       //获取推荐方案
       getRecommend(data){
+        if(this.solutionList.length === 0) {
+          return '';
+        }
         let arr = new Array();
         let list = new Array();
         arr = this.getBest(data);
