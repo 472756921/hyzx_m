@@ -11,12 +11,15 @@
       </Col>
     </Row>
     <Row :gutter="10">
-      <Col span="8"  v-for="(item, i) in order" :key="i">
-        <div class="order">
+      <Col span="8"  v-for="(item, i) in order" :key="i" style="height: 550px">
+        <div :class="{'orderOver':item.servicStatus==2, 'order':item.servicStatus!=2}" >
           <div>
             <div>
               <span class="orderTitle">
-                <div>{{ item.anonymous==false?'服务单':'匿名服务单' }}</div>
+                <div>
+                  {{ item.anonymous==false?'服务单':'匿名服务单' }}
+                  <span style="color: red;font-size: 14px" v-if="item.servicStatus==2">已完成</span>
+                </div>
                 <div class="orderNumber">单号：{{item.serviceOrderNumber}} </div>
                 <div class="orderNumber">创建时间：{{item.createTime}}</div>
               </span>
@@ -54,39 +57,29 @@
             </Row>
           </div>
           <div v-if="item.project!=null">
-            <div class="orderLititle">非卡扣项目：</div>
+            <div class="orderLititle">储值卡扣项目-金额：</div>
             <div class="orderLiCon"  style="background: #f7f7f7;padding-left: 10px">
               <Row>
-                <Col span="12" v-for="(it,i) in item.project" :key="it.id">
-                  {{ it.projectName }} &nbsp;
-                  <span class="price">￥{{ it.money }}</span>
+                <Col span="12" v-for="(it,i) in item.resultData.data" :key="it.id"  v-if="it.sendMoney!=undefined">
+                  {{ it.name }} &nbsp;
+                  <span class="price">￥{{ it.sendMoney }}</span>
                 </Col>
+                <Col span="24">总额：<span class="price">￥{{item.resultData.total}}</span></Col>
               </Row>
             </div>
           </div>
-          <div v-if="item.cardProject!=null"><span class="orderLititle">卡扣项目：</span>
+          <div v-if="item.cardProject!=null"><span class="orderLititle">疗程卡卡扣项目：</span>
             <div class="orderLiCon" style="background: #f7f7f7;padding-left: 10px">
               <Row>
-                <Col span="12" v-for="(it,i) in item.cardProject" :key="it.id">
-                 {{ it.projectName }} &nbsp;<span class="price">￥{{ it.money }}</span>
+                <Col span="12" v-for="(it,i) in item.resultData.data" :key="it.id" v-if="it.total!=undefined">
+                 {{ it.name }} &nbsp;<span class="price">卡上剩余{{ it.total }}次</span>
                 </Col>
               </Row>
             </div>
           </div>
-
-          <div style="font-size: 16px;margin: 10px auto;" >储值卡付款合计：<span class="price" style="font-size: 16px">￥{{ item.cashAmount }}</span></div>
-          <div>结算方式：</div>
-          <RadioGroup v-model="ordert[i]">
-            <Radio label="1" size="small"><span class="orderLititle">消耗：</span>
-              <span class="orderLiCon">(余111)</span></Radio>
-            <Radio label="2" size="small"> <span class="orderLititle">卡扣：</span>
-              <span class="orderLiCon">(余111)</span></Radio>
-            <Radio label="3" size="small"><span class="orderLititle">现金项：</span>
-              <span class="orderLiCon">(余111)</span></Radio>
-          </RadioGroup>
           <div  style="width: 100%;margin: 10px auto;text-align:center">
-            <Button  :class="{hy_btn:ordert[i]!=''&&ordert[i]!=null}" @click="settlement(item,i)" :disabled="ordert[i]==''||ordert[i]==null">结算</Button>
-            <Button type="ghost" @click="edit(item)">编辑</Button>
+            <Button @click="settlement(item,i)" :disabled="item.servicStatus==2" style="background: #fff">结算</Button>
+            <Button type="ghost" @click="edit(item)" :disabled="item.servicStatus==2">编辑</Button>
           </div>
         </div>
       </Col>
@@ -446,6 +439,13 @@
     margin-top: 10px;
     border: 1px solid #ddd;
     padding: 20px 20px!important;
+  }
+  .orderOver{
+    line-height: 30px;
+    margin-top: 10px;
+    border: 1px solid #ddd;
+    padding: 20px 20px!important;
+    background: #f9f9f9;
   }
   .price{
     color: red;
