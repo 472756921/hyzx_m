@@ -183,13 +183,7 @@
           preSale: '',
         },
         userCardInfo:'',
-        u_list: [
-          {
-            id:'1',
-            realName: '1111',
-            phoneNumber: '1888888888888'
-          }
-        ],
+        u_list: [],
         e_list: [],
         r_list: [],
         p_list: [],

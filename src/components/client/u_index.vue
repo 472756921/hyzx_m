@@ -27,7 +27,7 @@
       <br/>
       <span>推荐人：</span>
       <Select v-model="user.introducerId" filterable style="width:200px" :disabled="emclass=='修改用户'?true:false">
-        <!--<Option v-for="item in u_list" :value="item.value" :key="item.value">{{ item.label }}</Option>-->
+        <Option v-for="item in user_list" :value="item.id" :key="item.id">{{ item.realName }} - {{item.phoneNumber}}</Option>
       </Select>
     </Modal>
 
@@ -103,6 +103,7 @@
     name: 'u_index',
     data () {
       return {
+        user_list: [],
         pageN: 1,
         total: 1,
         u_name: '',
@@ -194,62 +195,11 @@
           }
         ],
         data: [],
-        e_list: [
-          {
-            value: '1',
-            label: '小黑'
-          },
-          {
-            value: '2',
-            label: '小白'
-          },
-        ],
-        r_list: [
-          {
-            value: '302',
-            label: '302'
-          },
-          {
-            value: '303',
-            label: '303'
-          },
-        ],
-        p_list: [
-          {
-            value: '1',
-            price: '1200.00',
-            label: '美体',
-          },
-          {
-            value: '2',
-            price: '1100.00',
-            label: '嫩肤',
-          },
-        ],
-        pr_list: [
-          {
-            value: '1',
-            price: '10.00',
-            label: '宝宝霜',
-          },
-          {
-            value: '2',
-            price: '30.00',
-            label: '霸王洗发露',
-          },
-        ],
-        card_list: [
-          {
-            value: '1',
-            price: '10.00',
-            label: '美肤卡',
-          },
-          {
-            value: '2',
-            price: '30.00',
-            label: '洗头卡',
-          },
-        ],
+        e_list: [],
+        r_list: [],
+        p_list: [],
+        pr_list: [],
+        card_list: [],
         model1: '',
         model2: '',
         model5: '',
@@ -259,8 +209,14 @@
     },
     created() {
       this.getList(1);
+      this.GetData('u_Alllist',this, this.setData);
     },
     methods: {
+      setData(data, type) {
+        if(type == 'u_Alllist'){
+          this.user_list = data;
+        }
+      },
       getPage(current){
         this.getList(current);
       },
