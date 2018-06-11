@@ -234,9 +234,8 @@
       way(row) {
         if(this.solutionList.length === 0) {
           this.$Message.warning('该门店暂未配置解决方案');
-          return '';
+          return false;
         }
-        this.questionID = row.id;
         if(row.programme == 0) {
           this.waysF = false;
           this.radio = '1';
@@ -286,7 +285,7 @@
               basicname= this.solutionList[j].basicProgramme.split(',');
               basicid = this.solutionList[j].basicProgrammeIds.split(',');
               for(let m in basicid){
-                  res1.push(basicid[m])
+                res1.push(basicid[m])
               }
               for(let n in basicname){
                   res2.push(basicname[n])
@@ -300,9 +299,12 @@
             name: res2[m]
           })
         }
+        if(list.length == 0) {
+          return []
+        }
+
         list = this.uniqueArray(list ,'id');
         return list;
-
       },
       //获取最优方案
       getBest(data){
@@ -335,6 +337,10 @@
             name: res2[m]
           })
         }
+
+        if(list.length == 0) {
+          return []
+        }
         list = this.uniqueArray(list ,'id');
         return list;
       },
@@ -343,8 +349,8 @@
         if(this.solutionList.length === 0) {
           return '';
         }
-        let arr = new Array();
-        let list = new Array();
+        let arr = [];
+        let list = [];
         arr = this.getBest(data);
         for(let i in this.userCardInfo){
           for( let j in this.userCardInfo[i].project){
@@ -354,6 +360,9 @@
             })
           }
 
+        }
+        if(list.length == 0) {
+          return []
         }
         list = this.uniqueArray(arr,'id');
         return list;

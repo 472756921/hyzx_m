@@ -2,8 +2,8 @@
  * Created by Benson on 2017/11/29.
  */
 
-const host = 'http://116.62.201.135:8080';
-// const host = 'http://192.168.1.3:8080';
+// const host = 'http://116.62.201.135:8080';
+const host = 'http://192.168.1.3:8080';
 
 export const login = function () {
   const URL = '/app/api/user/login';

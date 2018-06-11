@@ -343,8 +343,16 @@
             },
             url:ser_Over()+'?id='+ this.settleData.id
           }).then( (res) =>{
-            this.$Message.info({content:'结算完成，请用户签字', duration: 3});
-            this.getList(1);
+            if(res.data.status == 3) {
+              this.$Message.error('结算失败，项目卡次数不足');
+            }
+            if(res.data.status == 2) {
+              this.$Message.error('结算失败，储值卡余额不足');
+            }
+            if(res.data.status == 1) {
+              this.$Message.info({content:'结算完成，请用户签字', duration: 3});
+              this.getList(1);
+            }
           }).catch( (err) =>{
             this.$Message.error('结算失败，请稍后再试');
           })

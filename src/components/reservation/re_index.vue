@@ -200,7 +200,8 @@
             this.orderID = calEvent.id;
           },
           dayClick: (calEvent, jsEvent, view)=>{
-            this.newyy();
+            let data = calEvent._i.slice(0);
+            this.newyy(data.splice(0,5));
           },
         });
         this.over = true;
@@ -253,10 +254,15 @@
         var second=now.getSeconds();
         return "20"+year+"-"+month+"-"+date+" "+hour+":"+minute+":"+second;
       },
-      newyy() {
+      newyy(dateS) {
         this.model1 = true;
-        this.newDate = '';
-        this.newDate2 = '';
+        if(dateS instanceof Array) {
+          this.newDate = new Date(dateS[0],dateS[1],dateS[2],dateS[3],dateS[4]);
+          this.newDate2 = new Date(dateS[0],dateS[1],dateS[2]);
+        } else {
+          this.newDate = new Date();
+          this.newDate2 = new Date();
+        }
         this.model2 = [];
         this.model3 = '';
         this.model4 = '';

@@ -5,7 +5,8 @@
       <div class="box2">
         <input type="text" placeholder="账号" v-model="account"/>
         <input type="password" placeholder="密码" v-model="pwd"/><br/><br/>
-        <Checkbox v-model="rember">记住密码</Checkbox><br/>
+        <span><a style="color: #4da6ff!important;" href="http://116.62.201.135/gl/#/register">注册门店</a></span>
+        <Checkbox v-model="rember" style="float: right">记住密码</Checkbox>
         <Button type="ghost" class="loginBtn" @click="login">登录</Button>
       </div>
     </div>
@@ -76,7 +77,7 @@
   }
   .box2{
     margin: 20px auto;
-    padding: 50px 40px;
+    padding: 40px;
     background-color:rgba(0,0,0,0.1);
     border-radius: 10px;
     overflow: auto;
@@ -95,6 +96,8 @@
     color: #ffffff;
     font-size: 14px;
     margin-top: 10px;
+    margin: 10px auto;
+    display: block;
   }
   .loginBtn:hover{
     border: 1px solid #eee;

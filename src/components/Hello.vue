@@ -13,11 +13,12 @@
           <MenuItem name="p_index"><i class="iconfont icon-manage"></i>项目管理</MenuItem>
           <MenuItem name="r_index"><i class="iconfont icon-dynamic"></i>经营报表</MenuItem>
           <MenuItem name="ro_index"><Icon type="ios-heart-outline"></Icon>床位管理</MenuItem>
+          <MenuItem name="admin"><Icon type="ios-heart-outline"></Icon>门店设置</MenuItem>
         </Menu>
       </Col>
       <Col span="21">
       <div class="layout-header">
-        <span class="title">美容院门店系统</span>
+        <span class="title">美容院门店系统 - {{this.d}}</span>
         <div class="adminInfo">
           <Avatar :src="userInfo.icon == null ? 'http://k2.jsqq.net/uploads/allimg/1706/7_170629152344_5.jpg': userInfo.icon" size="large" style="vertical-align: middle"/>
           <span class="user" @click="go('b_index')"> &nbsp;&nbsp;{{userInfo.realName}}</span>
@@ -57,17 +58,23 @@ export default {
         'p_index',
         'r_index',
         'ro_index',
-      ]
+      ],
+      d: '',
     }
   },
   created(){
+    this.d = JSON.parse(sessionStorage.getItem('userInfo')).storeName;
     this.myBrowser();
     this.checkUrl();
     this.checkLogin();
   },
   methods: {
     go(name) {
-      this.$router.push({name: name});
+      if(name === 'admin') {
+        window.open("http://116.62.201.135/gl/#/");
+      } else {
+        this.$router.push({name: name});
+      }
     },
     checkUrl(){
       let test = window.location.href;

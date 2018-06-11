@@ -110,6 +110,10 @@
             key: 'customerName',
           },
           {
+            title: '投诉人电话',
+            key: 'customerPhone',
+          },
+          {
             title: '被投诉人',
             key: 'btsrName'
           },
